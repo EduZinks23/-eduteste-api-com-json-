@@ -27,7 +27,8 @@
     poster="MY_VIDEO_POSTER.jpg"
     data-setup="{}"
   >
-    <source src="sample.mp4" type="video/webm" />
+    <source src="sample.mp4"
+   type="video/webm" />
    type="video/mp4" />
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a
