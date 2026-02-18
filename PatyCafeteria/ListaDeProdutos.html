@@ -6,32 +6,50 @@
 <title>Pedidos</title>
 
 <style>
+
+/* ===== VARIÁVEIS PADRÃO (OBRIGATÓRIO) ===== */
+:root{
+  --bg:#ffffff;
+  --card:#f9f9f9;
+  --text:#000000;
+  --muted:#555555;
+  --button:#25D366;
+  --button-text:#ffffff;
+  --border:#dddddd;
+  --list-item:#ffffff;
+}
+
+/* ===== GLOBAL ===== */
 body{
     font-family: Arial, sans-serif;
-    background:#f2f2f2;
+    background:var(--bg);
+    color:var(--text);
     padding:20px;
+    margin:0;
 }
 
 h2{
     text-align:center;
 }
 
-.lista{
+/* ===== CONTAINER ===== */
+.list-item{
     max-width:450px;
     margin:auto;
-    background:#fff;
+    background:var(--list-item);
     padding:15px;
     border-radius:10px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    border:1px solid var(--border);
 }
 
+/* ===== ITEM ===== */
 .item{
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin-bottom:15px;
     padding-bottom:10px;
-    border-bottom:1px solid #ddd;
+    border-bottom:1px solid var(--border);
 }
 
 .nome{
@@ -39,7 +57,7 @@ h2{
 }
 
 .valor{
-    color:#444;
+    color:var(--muted);
     font-size:14px;
 }
 
@@ -50,24 +68,21 @@ h2{
 }
 
 button{
+    cursor:pointer;
+}
+
+/* BOTÕES + E - */
+.mais, .menos{
     width:30px;
     height:30px;
     border:none;
     border-radius:5px;
     font-size:18px;
-    cursor:pointer;
+    background:var(--button);
+    color:var(--button-text);
 }
 
-.mais{
-    background:#4CAF50;
-    color:#fff;
-}
-
-.menos{
-    background:#f44336;
-    color:#fff;
-}
-
+/* TOTAL */
 .total{
     margin-top:20px;
     font-size:18px;
@@ -75,35 +90,37 @@ button{
     text-align:center;
 }
 
+/* BOTÃO ENVIAR */
 .enviar{
     margin-top:15px;
     width:100%;
     padding:10px;
-    background:#25D366;
-    color:#fff;
+    background:var(--button);
+    color:var(--button-text);
     font-size:16px;
     border:none;
     border-radius:8px;
-    cursor:pointer;
 }
 
+/* RECIBO */
 .recibo{
     margin-top:20px;
-    background:#fafafa;
+    background:var(--card);
     padding:10px;
     border-radius:8px;
     font-size:14px;
-    border:1px solid #ddd;
+    border:1px solid var(--border);
 }
+
 </style>
 </head>
 <body>
 
 <h2>Lista de Produtos</h2>
 
-<div class="lista" id="listaProdutos">
+<div class="list-item" id="listItem">
 
-    <!-- Produtos -->
+    <!-- PRODUTOS -->
     <div class="item" data-nome="Bananinha recheada" data-valor="2.50">
         <div>
             <div class="nome">Bananinha recheada</div>
@@ -167,14 +184,32 @@ button{
 </div>
 
 <script>
-	
 
+/* ===== APLICAR TEMA GLOBAL ===== */
+const vars = {
+  bg: "--bg",
+  card: "--card",
+  text: "--text",
+  muted: "--muted",
+  button: "--button",
+  buttonText: "--button-text",
+  border: "--border",
+  listItem: "--list-item"
+};
+
+Object.keys(vars).forEach(id=>{
+  const value = localStorage.getItem(id);
+  if(value){
+    document.documentElement.style.setProperty(vars[id], value);  
+  }
+});
+
+/* ===== SISTEMA DE PEDIDOS ===== */
 let total = 0;
 
 function atualizar(){
     document.getElementById("totalValor").innerText =
         total.toFixed(2).replace(".", ",");
-
     gerarRecibo();
 }
 
@@ -257,33 +292,6 @@ function enviarWhatsApp(){
 
     window.open(url, "_blank");
 }
-
-
-
-const vars = {
-  bg: "--bg",
-  card: "--card",
-  text: "--text",
-  muted: "--muted",
-  button: "--button",
-  buttonText: "--button-text",
-  banner: "--banner",
-  border: "--border",
-  listItem: "--list-item"
-};
-
-Object.keys(vars).forEach(id=>{
-  const value = localStorage.getItem(id);
-  if(value){
-    document.documentElement.style.setProperty(vars[id], value);
-  }
-});
-
-
-
-
-
-
 
 </script>
 
