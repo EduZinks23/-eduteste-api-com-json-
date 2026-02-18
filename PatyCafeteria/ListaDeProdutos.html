@@ -1,1 +1,291 @@
-test
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedidos</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    padding:20px;
+}
+
+h2{
+    text-align:center;
+}
+
+.lista{
+    max-width:450px;
+    margin:auto;
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    padding-bottom:10px;
+    border-bottom:1px solid #ddd;
+}
+
+.nome{
+    font-weight:bold;
+}
+
+.valor{
+    color:#444;
+    font-size:14px;
+}
+
+.controle{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+button{
+    width:30px;
+    height:30px;
+    border:none;
+    border-radius:5px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.mais{
+    background:#4CAF50;
+    color:#fff;
+}
+
+.menos{
+    background:#f44336;
+    color:#fff;
+}
+
+.total{
+    margin-top:20px;
+    font-size:18px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.enviar{
+    margin-top:15px;
+    width:100%;
+    padding:10px;
+    background:#25D366;
+    color:#fff;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.recibo{
+    margin-top:20px;
+    background:#fafafa;
+    padding:10px;
+    border-radius:8px;
+    font-size:14px;
+    border:1px solid #ddd;
+}
+</style>
+</head>
+<body>
+
+<h2>Lista de Produtos</h2>
+
+<div class="lista" id="listaProdutos">
+
+    <!-- Produtos -->
+    <div class="item" data-nome="Bananinha recheada" data-valor="2.50">
+        <div>
+            <div class="nome">Bananinha recheada</div>
+            <div class="valor">R$ 2,50</div>
+        </div>
+        <div class="controle">
+            <button class="menos">-</button>
+            <span class="quantidade">0</span>
+            <button class="mais">+</button>
+        </div>
+    </div>
+
+    <div class="item" data-nome="Pastel" data-valor="2.50">
+        <div>
+            <div class="nome">Pastel</div>
+            <div class="valor">R$ 2,50</div>
+        </div>
+        <div class="controle">
+            <button class="menos">-</button>
+            <span class="quantidade">0</span>
+            <button class="mais">+</button>
+        </div>
+    </div>
+
+    <div class="item" data-nome="Coxinha" data-valor="3.00">
+        <div>
+            <div class="nome">Coxinha</div>
+            <div class="valor">R$ 3,00</div>
+        </div>
+        <div class="controle">
+            <button class="menos">-</button>
+            <span class="quantidade">0</span>
+            <button class="mais">+</button>
+        </div>
+    </div>
+
+    <div class="item" data-nome="Refrigerante" data-valor="5.00">
+        <div>
+            <div class="nome">Refrigerante</div>
+            <div class="valor">R$ 5,00</div>
+        </div>
+        <div class="controle">
+            <button class="menos">-</button>
+            <span class="quantidade">0</span>
+            <button class="mais">+</button>
+        </div>
+    </div>
+
+    <div class="total">
+        Total: R$ <span id="totalValor">0,00</span>
+    </div>
+
+    <button class="enviar" onclick="enviarWhatsApp()">
+        Enviar para WhatsApp
+    </button>
+
+    <div class="recibo" id="recibo">
+        Nenhum item adicionado.
+    </div>
+
+</div>
+
+<script>
+	
+
+let total = 0;
+
+function atualizar(){
+    document.getElementById("totalValor").innerText =
+        total.toFixed(2).replace(".", ",");
+
+    gerarRecibo();
+}
+
+document.querySelectorAll(".item").forEach(item => {
+
+    const valor = parseFloat(item.dataset.valor);
+    const quantidadeSpan = item.querySelector(".quantidade");
+    const btnMais = item.querySelector(".mais");
+    const btnMenos = item.querySelector(".menos");
+
+    btnMais.addEventListener("click", () => {
+        let q = parseInt(quantidadeSpan.innerText);
+        q++;
+        quantidadeSpan.innerText = q;
+        total += valor;
+        atualizar();
+    });
+
+    btnMenos.addEventListener("click", () => {
+        let q = parseInt(quantidadeSpan.innerText);
+        if(q > 0){
+            q--;
+            quantidadeSpan.innerText = q;
+            total -= valor;
+            atualizar();
+        }
+    });
+
+});
+
+function gerarRecibo(){
+    let texto = "";
+    document.querySelectorAll(".item").forEach(item => {
+        let nome = item.dataset.nome;
+        let valor = parseFloat(item.dataset.valor);
+        let q = parseInt(item.querySelector(".quantidade").innerText);
+
+        if(q > 0){
+            texto += q + "x " + nome + " = R$ " +
+                (q * valor).toFixed(2).replace(".", ",") + "<br>";
+        }
+    });
+
+    if(texto === ""){
+        texto = "Nenhum item adicionado.";
+    } else {
+        texto += "<br><strong>Total: R$ " +
+            total.toFixed(2).replace(".", ",") + "</strong>";
+    }
+
+    document.getElementById("recibo").innerHTML = texto;
+}
+
+function enviarWhatsApp(){
+
+    if(total <= 0){
+        alert("Adicione pelo menos um produto!");
+        return;
+    }
+
+    let mensagem = "Pedido:%0A";
+
+    document.querySelectorAll(".item").forEach(item => {
+        let nome = item.dataset.nome;
+        let valor = parseFloat(item.dataset.valor);
+        let q = parseInt(item.querySelector(".quantidade").innerText);
+
+        if(q > 0){
+            mensagem += q + "x " + nome + " = R$ " +
+                (q * valor).toFixed(2).replace(".", ",") + "%0A";
+        }
+    });
+
+    mensagem += "%0ATotal: R$ " +
+        total.toFixed(2).replace(".", ",");
+
+    let numero = "5528999407219";
+    let url = "https://api.whatsapp.com/send?phone=" +
+              numero + "&text=" + mensagem;
+
+    window.open(url, "_blank");
+}
+
+
+
+const vars = {
+  bg: "--bg",
+  card: "--card",
+  text: "--text",
+  muted: "--muted",
+  button: "--button",
+  buttonText: "--button-text",
+  banner: "--banner",
+  border: "--border",
+  listItem: "--list-item"
+};
+
+Object.keys(vars).forEach(id=>{
+  const value = localStorage.getItem(id);
+  if(value){
+    document.documentElement.style.setProperty(vars[id], value);
+  }
+});
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
