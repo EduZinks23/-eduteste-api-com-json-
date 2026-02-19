@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido Online</title>
+
+<style>
+
+/* ================= TEMAS ================= */
+
+:root{
+  --bg:#f7f7f7;
+  --card:#ffffff;
+  --text:#222;
+  --accent:#ea1d2c;
+  --danger:#c62828;
+}
+
+body.dark{
+  --bg:#121212;
+  --card:#1e1e1e;
+  --text:#fff;
+  --accent:#ff3d3d;
+}
+
+body.amoled{
+  --bg:#000;
+  --card:#0a0a0a;
+  --text:#fff;
+  --accent:#ff1744;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:120px;
+  transition:0.3s;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+  background:var(--accent);
+  color:#fff;
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
+  font-size:20px;
+  position:sticky;
+  top:0;
+}
+
+/* ================= BANNER ================= */
+
+.banner{
+  height:150px;
+  background:url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092") center/cover;
+}
+
+/* ================= LISTA ================= */
+
+.container{
+  padding:15px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:15px;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  margin-bottom:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.card img{
+  width:50px;
+  height:50px;
+  border-radius:5px;
+  object-fit:cover;
+}
+
+.info{
+  flex:1;
+  margin-left:10px;
+}
+
+.nome{
+  font-weight:bold;
+}
+
+.preco{
+  color:var(--accent);
+  margin-top:5px;
+}
+
+/* CONTROLES */
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.btn{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:none;
+  font-size:12px;
+  cursor:pointer;
+  color:#fff;
+}
+
+.plus{background:var(--accent);}
+.minus{background:var(--danger);}
+
+.qtd{
+  font-weight:bold;
+}
+
+/* ================= DETALHES ================= */
+
+.detalhes{
+  background:var(--card);
+  margin:15px;
+  padding:15px;
+  border-radius:15px;
+  font-size:14px;
+}
+
+/* ================= PAGAMENTO ================= */
+
+.pagamento{
+  background:var(--card);
+  margin:15px;
+  padding:15px;
+  border-radius:15px;
+}
+
+select,input{
+  width:100%;
+  padding:8px;
+  margin-top:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.qr{
+  text-align:center;
+  margin-top:15px;
+}
+
+/* ================= CARRINHO FIXO ================= */
+
+.carrinho{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:var(--accent);
+  color:#fff;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+.enviar{
+  background:#fff;
+  color:var(--accent);
+  border:none;
+  padding:8px 15px;
+  border-radius:20px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* FAB */
+
+.fab{
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+Pedido #<span id="numeroPedido"></span>
+</div>
+
+<div class="banner"></div>
+
+<div class="container">
+
+<!-- PRODUTOS -->
+
+
+<div class="card" data-nome="Bananinha Recheada Pequena" data-preco="2.50">
+<img src="https://lh3.googleusercontent.com/pw/AP1GczN-giZPvqrE160X13ccliaBbQLV0uG48ljOEf_LZpkvtBR12w6KX--c4ink1d9AHIox4Hh_SJxWTBa2tpsLpKyxxYLcOM6_K2hysJr3jP3gSEZGtQbhcFkAyeHUmUh-pI2vJM9VXpEgt0z-HQcuRnpB=w375-h666-s-no-gm?authuser=0">
+<div class="info">
+<div class="nome">Bananinha Recheada Pequena</div>
+<div class="preco">R$ 2,50</div>
+</div>
+<div class="controls">
+<button class="btn minus" onclick="diminuir(this)">-</button>
+<span class="qtd">0</span>
+<button class="btn plus" onclick="aumentar(this)">+</button>
+</div>
+</div>
+
+
+
+
+<div class="card" data-nome="Pastel De Frango Pequeno" data-preco="2.50">
+<img src="https://lh3.googleusercontent.com/pw/AP1GczM0QEl2jV2Uvo0RsgDp90AxsmNrUQduMVhZ-l6--90yfXJYKan9SaecKtQS3A1VGTjcT--uvaFx6sMA86fReha-sy0Fb1gL4TmoVbw2m1er4MBgAKJhMiwBbYOlTikQ63VRc9CC5H0eHoorM8pkUtRp=w375-h666-s-no-gm?authuser=0">
+<div class="info">
+<div class="nome">Pastel De Frango Pequeno</div>
+<div class="preco">R$ 2,50</div>
+</div>
+<div class="controls">
+<button class="btn minus" onclick="diminuir(this)">-</button>
+<span class="qtd">0</span>
+<button class="btn plus" onclick="aumentar(this)">+</button>
+</div>
+</div>
+
+
+
+<div class="card" data-nome="Pastel De Carne Pequeno" data-preco="2.50">
+<img src=" ">
+<div class="info">
+<div class="nome">Pastel De Carne Pequeno</div>
+<div class="preco">R$ 2,50</div>
+</div>
+<div class="controls">
+<button class="btn minus" onclick="diminuir(this)">-</button>
+<span class="qtd">0</span>
+<button class="btn plus" onclick="aumentar(this)">+</button>
+</div>
+</div>
+
+
+
+
+
+<div class="card" data-nome="3 Panqueca Pequena De Carne" data-preco="10.00">
+<img src="https://lh3.googleusercontent.com/pw/AP1GczOrLn8h5kvamrR8XE80aaubXxPI_XfYd7v4y6i4L0--GPH-4BYhjKpXTiCjmRVitp-HGIBYuRSU6jAfpuf2WNMB3EtK0EkXE1fAiLkoKZ2qX5SpwCpKkfOuLZFfXB5pnoMuvqUa3_mY99t26TfTCyCQ=w335-h744-s-no-gm?authuser=0">
+<div class="info">
+<div class="nome">3 Panqueca Pequena De Carne</div>
+<div class="preco">R$ 10,00</div>
+</div>
+<div class="controls">
+<button class="btn minus" onclick="diminuir(this)">-</button>
+<span class="qtd">0</span>
+<button class="btn plus" onclick="aumentar(this)">+</button>
+</div>
+</div>
+
+
+
+
+
+
+<div class="card" data-nome="3 Panqueca Pequena De Frango" data-preco="10.00">
+<img src="https://lh3.googleusercontent.com/pw/AP1GczPW6d7q1lP5c0o2n6hlIyCPtpOaiNABSdUhATBwBFPJ6bAGTupXAbb1cw592QHUXqVthYN3o_u_pduGcSYJ-KRa2Aw5mfx6mbjSPdk8NIVRatr2yd9qgLdpGWJ7j3D8bK3kjU582QcV2GKGUCWI2r2F=w335-h744-s-no-gm?authuser=0">
+<div class="info">
+<div class="nome">3 Panqueca Pequena De Frango</div>
+<div class="preco">R$ 10,00</div>
+</div>
+<div class="controls">
+<button class="btn minus" onclick="diminuir(this)">-</button>
+<span class="qtd">0</span>
+<button class="btn plus" onclick="aumentar(this)">+</button>
+</div>
+</div>
+
+
+
+
+<div class="card" data-nome="3 Panqueca Pequena Misturada" data-preco="10.00">
+<img src=" ">
+<div class="info">
+<div class="nome">3 Panqueca Pequena Misturada</div>
+<div class="preco">R$ 10,00</div>
+</div>
+<div class="controls">
+<button class="btn minus" onclick="diminuir(this)">-</button>
+<span class="qtd">0</span>
+<button class="btn plus" onclick="aumentar(this)">+</button>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<div class="detalhes" id="detalhes">
+Nenhum item adicionado.
+</div>
+
+<div class="pagamento">
+<select id="formaPagamento" onchange="verificarPagamento()">
+<option value="">Forma de pagamento</option>
+<option value="Pix">Pix</option>
+<option value="Dinheiro">Dinheiro</option>
+</select>
+
+<div id="trocoDiv" style="display:none;">
+<input type="number" id="troco" placeholder="Troco para">
+</div>
+
+<div class="qr" id="qrCode"></div>
+
+</div>
+
+<div class="carrinho">
+<span>Total: R$ <span id="total">0.00</span></span>
+<button class="enviar" onclick="enviarPedido()">Enviar Pedido Ao WhatsApp</button>
+</div>
+
+<button class="fab" onclick="trocarTema()">T</button>
+
+<script>
+
+let telefone="5548984182723";
+let chavePix="00020126580014br.gov.bcb.pix0136ac161d43-f9f9-4ac8-a427-b4d99c170a945204000053039865802BR5924Patricia Ribeiro Martins6014RIO DE JANEIRO62070503***6304C94D";
+
+let numero=localStorage.getItem("numeroPedido");
+if(!numero) numero=1;
+document.getElementById("numeroPedido").innerText=numero;
+
+/* CONTROLE */
+
+function aumentar(btn){
+  let span=btn.parentElement.querySelector(".qtd");
+  span.innerText=parseInt(span.innerText)+1;
+  atualizar();
+}
+
+function diminuir(btn){
+  let span=btn.parentElement.querySelector(".qtd");
+  let valor=parseInt(span.innerText);
+  if(valor>0){
+    span.innerText=valor-1;
+    atualizar();
+  }
+}
+
+function atualizar(){
+  let cards=document.querySelectorAll(".card");
+  let total=0;
+  let html="";
+
+  cards.forEach(card=>{
+    let nome=card.dataset.nome;
+    let preco=parseFloat(card.dataset.preco);
+    let qtd=parseInt(card.querySelector(".qtd").innerText);
+
+    if(qtd>0){
+      let subtotal=preco*qtd;
+      total+=subtotal;
+      html+=qtd+"x "+nome+" = R$ "+subtotal.toFixed(2)+"<br>";
+    }
+  });
+
+  if(html==="") html="Nenhum item adicionado.";
+  else html+="<br><strong>Total: R$ "+total.toFixed(2)+"</strong>";
+
+  document.getElementById("detalhes").innerHTML=html;
+  document.getElementById("total").innerText=total.toFixed(2);
+}
+
+/* PAGAMENTO */
+
+function verificarPagamento(){
+  let forma=document.getElementById("formaPagamento").value;
+  document.getElementById("trocoDiv").style.display=
+    forma==="Dinheiro"?"block":"none";
+
+  if(forma==="Pix"){
+    document.getElementById("qrCode").innerHTML=
+      "<img src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+chavePix+"'>";
+  }else{
+    document.getElementById("qrCode").innerHTML="";
+  }
+}
+
+/* ENVIAR */
+
+function enviarPedido(){
+
+  let cards=document.querySelectorAll(".card");
+  let forma=document.getElementById("formaPagamento").value;
+  let total=0;
+  let mensagem="Pedido #"+numero+"\n\n";
+
+  cards.forEach(card=>{
+    let nome=card.dataset.nome;
+    let preco=parseFloat(card.dataset.preco);
+    let qtd=parseInt(card.querySelector(".qtd").innerText);
+
+    if(qtd>0){
+      let subtotal=preco*qtd;
+      total+=subtotal;
+      mensagem+=qtd+"x "+nome+" = R$ "+subtotal.toFixed(2)+"\n";
+    }
+  });
+
+  if(total===0){ alert("Adicione produtos!"); return; }
+  if(forma===""){ alert("Selecione pagamento!"); return; }
+
+  mensagem+="\nTotal: R$ "+total.toFixed(2);
+  mensagem+="\nPagamento: "+forma;
+
+  if(forma==="Pix") mensagem+="\nChave Pix: "+chavePix;
+
+  window.location.href=
+    "https://api.whatsapp.com/send?phone="+telefone+
+    "&text="+encodeURIComponent(mensagem);
+
+  numero++;
+  localStorage.setItem("numeroPedido",numero);
+}
+
+/* TEMAS */
+
+let temas=["light","dark","amoled"];
+let atual=0;
+
+function trocarTema(){
+  document.body.classList.remove("dark","amoled");
+  atual++;
+  if(atual>=temas.length) atual=0;
+  if(temas[atual]!="light"){
+    document.body.classList.add(temas[atual]);
+  }
+}
+
+</script>
+
+</body>
+</html>
