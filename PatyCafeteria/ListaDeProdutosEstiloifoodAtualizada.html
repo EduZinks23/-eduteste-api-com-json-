@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedidos</title>
+
+<style>
+:root{
+  --bg:#f2f2f2;
+  --card:#fff;
+  --text:#111;
+  --primary:#ea1d2c;
+  --light:#fff3f4;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:90px;
+}
+
+/* HEADER */
+header{
+  background:var(--primary);
+  color:#fff;
+  padding:16px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* CATEGORIAS */
+#categorias{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:12px;
+  background:#fff;
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+
+.categoria-btn{
+  padding:8px 14px;
+  border-radius:20px;
+  border:1px solid #ddd;
+  background:#f5f5f5;
+  cursor:pointer;
+  white-space:nowrap;
+  font-weight:bold;
+}
+
+.categoria-btn.ativa{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+}
+
+/* PRODUTOS */
+#produtos{ padding:12px; }
+
+.card{
+  background:var(--card);
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.img-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+}
+
+.img-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.controle{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+}
+
+.qtd-box{
+  display:flex;
+  align-items:center;
+  background:#fff;
+  border-radius:30px;
+  padding:4px 8px;
+  gap:6px;
+}
+
+.qtd-box button{
+  background:var(--primary);
+  border:none;
+  color:#fff;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+.btn-add{
+  background:var(--primary);
+  border:none;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+.info{
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* CARRINHO */
+#carrinho{
+  background:#fff;
+  margin:12px;
+  padding:12px;
+  border-radius:12px;
+}
+
+#totalBox{
+  background:var(--light);
+  margin:12px;
+  padding:12px;
+  border-radius:12px;
+  font-weight:bold;
+  text-align:center;
+}
+
+/* INPUTS */
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+/* SELECT CUSTOM */
+.select-box{
+  width:100%;
+  max-width:250px;
+  margin:12px;
+  position:relative;
+}
+
+.select-trigger{
+  background:#fff;
+  padding:12px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  cursor:pointer;
+  border:1px solid #ddd;
+}
+
+.arrow{ color:var(--primary); }
+
+.options{
+  position:absolute;
+  top:100%;
+  left:0;
+  width:100%;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,.1);
+  max-height:0;
+  overflow:hidden;
+  transition:.3s;
+  z-index:999;
+}
+
+.select-box.active .options{
+  max-height:200px;
+}
+
+.option{
+  padding:10px;
+  cursor:pointer;
+}
+
+.option:hover{ background:var(--light); }
+
+.option.selected{
+  color:var(--primary);
+  font-weight:bold;
+}
+
+/* PIX */
+.pix-box{
+  display:none;
+  text-align:center;
+  padding:10px;
+}
+
+/* BOTÃO WHATS */
+#btnEnviar{
+  position:fixed;
+  bottom:15px;
+  right:15px;
+  background:#25D366;
+  color:#fff;
+  border:none;
+  padding:14px 18px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<header>Lista de Produtos</header>
+
+<div id="categorias"></div>
+<div id="produtos"></div>
+
+<div id="carrinho">
+  <h3>Seu Pedido</h3>
+  <div id="listaCarrinho">Carrinho vazio</div>
+</div>
+
+<div id="totalBox">
+  Total: R$ <span id="total">0.00</span>
+</div>
+
+<div style="padding:12px;">
+  <input type="text" id="nomeCliente" placeholder="Seu nome">
+  <input type="text" id="enderecoCliente" placeholder="Seu endereço">
+</div>
+
+<!-- SELECT -->
+<div class="select-box" id="selectBox">
+  <div class="select-trigger">
+    <span id="selectedText">Forma de pagamento</span>
+    <span class="arrow">&#9662;</span>
+  </div>
+  <div class="options">
+    <div class="option" data-value="pix">PIX</div>
+    <div class="option" data-value="dinheiro">Dinheiro</div>
+  </div>
+</div>
+
+
+<div id="trocoBox" style="display:none;">
+    <input type="number" id="valorTroco" placeholder="Troco para quanto?">
+    <label>
+      <input type="checkbox" id="semTroco"> Nao precisa de troco
+    </label>
+  </div>
+
+
+
+<div class="pix-box" id="pixArea">
+  <p><b>Chave Pix:</b> felipeeduardo085@gmail.com</p>
+  <img id="qrPix" width="200">
+</div>
+
+<button id="btnEnviar">Enviar Pedido</button>
+
+<script>
+const produtos=[
+ {nome:"X-Burger",preco:15,categoria:"Lanches",img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=600"},
+ {nome:"Pastel",preco:7,categoria:"Salgados",img:"https://images.unsplash.com/photo-1604908554165-1bfa9c7d88d6?w=600"},
+ {nome:"Refrigerante",preco:6,categoria:"Bebidas",img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600"}
+];
+
+let carrinho={};
+let categoriaAtual="Todos";
+let pagamento="";
+const numeroPedido=Math.floor(Math.random()*9000)+1000;
+
+const produtosDiv=document.getElementById("produtos");
+const categoriasDiv=document.getElementById("categorias");
+const listaCarrinho=document.getElementById("listaCarrinho");
+const totalSpan=document.getElementById("total");
+
+/* CATEGORIAS */
+function renderCategorias(){
+ let cats=["Todos"];
+ produtos.forEach(p=>{ if(!cats.includes(p.categoria)) cats.push(p.categoria); });
+ categoriasDiv.innerHTML=cats.map(c=>
+   `<button class="categoria-btn ${c===categoriaAtual?'ativa':''}"
+   onclick="filtrar('${c}')">${c}</button>`
+ ).join("");
+}
+
+function filtrar(cat){
+ categoriaAtual=cat;
+ renderCategorias();
+ renderProdutos();
+ atualizar();
+ atualizarCard(i);
+}
+
+/* PRODUTOS */
+function renderProdutos(){
+ let html="";
+ produtos.forEach((p,i)=>{
+  if(categoriaAtual!=="Todos" && p.categoria!==categoriaAtual) return;
+  html+=`
+  <div class="card">
+    <div class="img-wrap">
+      <img src="${p.img}">
+      <div class="controle">
+        ${carrinho[i]
+          ? `<div class="qtd-box">
+              <button onclick="remover(${i})">-</button>
+              <span>${carrinho[i]}</span>
+              <button onclick="add(${i})">+</button>
+            </div>`
+          : `<button class="btn-add" onclick="add(${i})">Adicionar</button>`
+        }
+      </div>
+    </div>
+    <div class="info">
+      <b>${p.nome}</b>
+      <span>R$ ${p.preco.toFixed(2)}</span>
+    </div>
+  </div>`;
+ });
+ produtosDiv.innerHTML=html;
+}
+
+
+
+
+function add(i){
+  carrinho[i] = (carrinho[i] || 0) + 1;
+  atualizar();
+  atualizarCard(i);
+}
+
+function remover(i){
+  carrinho[i]--;
+  if(carrinho[i] <= 0) delete carrinho[i];
+  atualizar();
+  atualizarCard(i);
+}
+
+function atualizarCard(i){
+  const card = document.querySelectorAll(".card")[i];
+  const controle = card.querySelector(".controle");
+
+  if(carrinho[i]){
+    controle.innerHTML = `
+      <div class="qtd-box">
+        <button onclick="remover(${i})">-</button>
+        <span>${carrinho[i]}</span>
+        <button onclick="add(${i})">+</button>
+      </div>
+    `;
+  } else {
+    controle.innerHTML = `
+      <button class="btn-add" onclick="add(${i})">Adicionar produto</button>
+    `;
+  }
+}
+
+
+
+
+
+function atualizar(){
+ let total=0, html="";
+ for(let i in carrinho){
+  let qtd=carrinho[i];
+  let p=produtos[i];
+  let sub=qtd*p.preco;
+  total+=sub;
+  html+=`${qtd}x ${p.nome} - R$ ${sub.toFixed(2)}<br>`;
+ }
+ listaCarrinho.innerHTML=html||"Carrinho vazio";
+ totalSpan.textContent=total.toFixed(2);
+}
+
+/* SELECT */
+const selectBox=document.getElementById("selectBox");
+const trigger=selectBox.querySelector(".select-trigger");
+const options=selectBox.querySelectorAll(".option");
+const selectedText=document.getElementById("selectedText");
+const pixArea=document.getElementById("pixArea");
+
+const trocoBox = document.getElementById("trocoBox");
+
+
+trigger.onclick=()=>selectBox.classList.toggle("active");
+
+options.forEach(o=>{
+ o.onclick=()=>{
+  options.forEach(x=>x.classList.remove("selected"));
+  o.classList.add("selected");
+  selectedText.textContent=o.textContent;
+  pagamento=o.dataset.value;
+  selectBox.classList.remove("active");
+
+  if(pagamento==="pix"){
+    gerarPix();
+    pixArea.style.display="block";
+    trocoBox.style.display = "none";
+  }else{
+    pixArea.style.display="none";
+    trocoBox.style.display = "block";
+  }
+ };
+});
+
+document.addEventListener("click",(e)=>{
+ if(!selectBox.contains(e.target))
+   selectBox.classList.remove("active");
+   
+   
+  
+  
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PIX SIMPLES */
+function gerarPix(){
+ let valor=totalSpan.textContent;
+ document.getElementById("qrPix").src=
+ "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Pagamento%20Pix%20R$"+valor;
+}
+
+/* WHATS */
+document.getElementById("btnEnviar").onclick=()=>{
+ let nome=document.getElementById("nomeCliente").value;
+ let endereco=document.getElementById("enderecoCliente").value;
+ let total=totalSpan.textContent;
+
+ if(total<=0||!nome||!endereco||!pagamento){
+  alert("Preencha tudo corretamente!");
+  return;
+ }
+
+ let msg=`Pedido #${numeroPedido}\n\n`;
+ for(let i in carrinho){
+  let qtd=carrinho[i];
+  let p=produtos[i];
+  msg+=`${qtd}x ${p.nome} - R$ ${(qtd*p.preco).toFixed(2)}\n`;
+ }
+ msg+=`\nTotal: R$ ${total}\nPagamento: ${pagamento}\n\nCliente: ${nome}\nEndereço: ${endereco}`;
+
+
+
+if(pagamento === "dinheiro"){
+    const valorTroco = document.getElementById("valorTroco").value;
+    const semTroco = document.getElementById("semTroco").checked;
+
+    if(semTroco){
+      msg += "\nTroco: Não precisa";
+    } else if(valorTroco){
+      msg += "\nTroco para: R$ " + parseFloat(valorTroco).toFixed(2);
+    }
+  }
+  
+
+
+
+
+ window.open("https://api.whatsapp.com/send?phone=5528999407219&text="+encodeURIComponent(msg));
+};
+
+renderCategorias();
+renderProdutos();
+
+</script>
+
+</body>
+</html>
