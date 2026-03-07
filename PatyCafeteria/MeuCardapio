@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CardÃ¡pio PIX Oficial</title>
+
+<style>
+:root{
+  --primary:#EA1D2C;
+  --bg:#f5f5f5;
+  --card:#fff;
+}
+body{margin:0;font-family:Arial;background:var(--bg);}
+h2{text-align:center;padding:15px;margin:0;}
+.container{padding:15px;}
+.card{background:#fff;border-radius:12px;margin-bottom:15px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.05);}
+.card img{width:100%;height:160px;object-fit:cover;}
+.card-content{padding:12px;display:flex;justify-content:space-between;align-items:center;}
+.qtd-box{display:flex;gap:8px;align-items:center;}
+.qtd-box button{width:28px;height:28px;border:none;border-radius:50%;background:var(--primary);color:#fff;}
+.btn-add{background:var(--primary);color:#fff;border:none;padding:8px 14px;border-radius:20px;}
+.total-box{background:#fff;padding:5px;position:sticky;bottom:0;border-top:2px solid #ddd;}
+
+
+select,input,textarea{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid #ccc;}
+button.finalizar{width:100%;margin-top:12px;padding:12px;background:var(--primary);border:none;color:#fff;border-radius:10px;font-size:16px;}
+#pixArea{text-align:center;margin-top:10px;display:none;}
+#pixArea img{width:100px;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<h2>Meu CardÃ¡pio</h2>
+<div class="container" id="lista"></div>
+
+<div class="total-box">
+<input type="text" id="nomeCliente" placeholder="Seu nome">
+<input type="text" id="enderecoCliente" placeholder="Seu endereÃ§o completo">		
+<strong>Total: R$ <span id="total">0.00</span></strong>
+
+<select id="pagamento">
+<option value="">Forma de pagamento</option>
+<option value="pix">PIX</option>
+<option value="dinheiro">Dinheiro</option>
+</select>
+
+<div id="trocoBox" style="display:none;">
+<input type="number" id="valorTroco" placeholder="Troco para quanto?">
+<label><input type="checkbox" id="semTroco"> NÃ£o precisa de troco</label>
+</div>
+
+<div id="pixArea">
+<p>Escaneie o QR Code PIX:</p>
+<img id="qrCode">
+<textarea id="pixCode" readonly></textarea>
+<button onclick="copiarPix()">Copiar CÃ³digo PIX</button>
+</div>
+
+<button class="finalizar" onclick="finalizarPedido()">Finalizar Pedido</button>
+</div>
+
+<script>
+const chavePix = "05255555959";
+const nomeRecebedor = "Patricia Ribeiro Martins";
+const cidade = "RIO DE JANEIRO";
+const telefoneWhatsapp = "5548984182723";
+
+const produtos=[
+{nome:"Pastel De Frango",preco:0.10,imagem:"https://images.unsplash.com/photo-1604908812010-0a7e2e7c9f5e"},
+{nome:"Coxinha",preco:5.00,imagem:"https://images.unsplash.com/photo-1625943553852-781c6dd46faa"}
+];
+
+let carrinho={};
+
+function render(){
+const lista=document.getElementById("lista");
+lista.innerHTML="";
+produtos.forEach((p,i)=>{
+lista.innerHTML+=`
+<div class="card">
+<img src="${p.imagem}">
+<div class="card-content">
+<div>
+<strong>${p.nome}</strong><br>
+<span>R$ ${p.preco.toFixed(2)}</span>
+</div>
+<div class="controle">
+<button class="btn-add" onclick="add(${i})">Adicionar</button>
+</div>
+</div>
+</div>`;
+});
+}
+
+function add(i){carrinho[i]=(carrinho[i]||0)+1;atualizar(i);atualizarTotal();}
+function remover(i){carrinho[i]--;if(carrinho[i]<=0)delete carrinho[i];atualizar(i);atualizarTotal();}
+
+function atualizar(i){
+const card=document.querySelectorAll(".card")[i];
+const controle=card.querySelector(".controle");
+if(carrinho[i]){
+controle.innerHTML=`
+<div class="qtd-box">
+<button onclick="remover(${i})">-</button>
+<span>${carrinho[i]}</span>
+<button onclick="add(${i})">+</button>
+</div>`;
+}else{
+controle.innerHTML=`<button class="btn-add" onclick="add(${i})">Adicionar</button>`;
+}
+}
+
+function atualizarTotal(){
+let total=0;
+for(let i in carrinho){total+=produtos[i].preco*carrinho[i];}
+document.getElementById("total").innerText=total.toFixed(2);
+}
+
+function montarCampo(id, valor){
+  return id + valor.length.toString().padStart(2,'0') + valor;
+}
+
+function crc16(payload){
+  let polinomio = 0x1021;
+  let resultado = 0xFFFF;
+
+  for(let i=0;i<payload.length;i++){
+    resultado ^= payload.charCodeAt(i) << 8;
+    for(let bit=0;bit<8;bit++){
+      if((resultado <<= 1) & 0x10000){
+        resultado ^= polinomio;
+      }
+    }
+  }
+  return (resultado & 0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+}
+
+function gerarPix(valor){
+
+  if(!valor || valor <= 0){
+    alert("Adicione produtos antes de gerar o PIX");
+    return;
+  }
+
+  const gui = montarCampo("00","BR.GOV.BCB.PIX");
+  const chave = montarCampo("01", chavePix);
+  const merchantAccount = montarCampo("26", gui + chave);
+
+  const payloadSemCRC =
+    montarCampo("00","01") +
+    merchantAccount +
+    montarCampo("52","0000") +
+    montarCampo("53","986") +
+    montarCampo("54", valor.toFixed(2)) +
+    montarCampo("58","BR") +
+    montarCampo("59", nomeRecebedor) +
+    montarCampo("60", cidade) +
+    montarCampo("62", montarCampo("05","***")) +
+    "6304";
+
+  const payloadFinal = payloadSemCRC + crc16(payloadSemCRC);
+
+  document.getElementById("pixCode").value = payloadFinal;
+
+  document.getElementById("qrCode").src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" +
+    encodeURIComponent(payloadFinal);
+
+  document.getElementById("pixArea").style.display = "block";
+}
+
+
+
+
+function copiarPix(){
+const campo=document.getElementById("pixCode");
+campo.select();
+
+document.execCommand("copy");
+alert("PIX copiado!");
+}
+
+document.getElementById("pagamento").addEventListener("change",function(){
+if(this.value==="pix"){
+document.getElementById("pixArea").style.display="block";
+
+document.getElementById("trocoBox").style.display="none";
+}else if(this.value==="dinheiro"){
+document.getElementById("trocoBox").style.display="block";
+document.getElementById("pixArea").style.display="none";
+
+}else{
+document.getElementById("pixArea").style.display="none";
+
+document.getElementById("trocoBox").style.display="none";
+}
+});
+
+function gerarNumeroPedido(){
+  const agora = new Date();
+  return agora.getFullYear().toString().slice(2) +
+         (agora.getMonth()+1).toString().padStart(2,'0') +
+         agora.getDate().toString().padStart(2,'0') +
+         agora.getHours().toString().padStart(2,'0') +
+         agora.getMinutes().toString().padStart(2,'0') +
+         agora.getSeconds().toString().padStart(2,'0');
+}
+
+function finalizarPedido(){
+
+  const nome = document.getElementById("nomeCliente").value.trim();
+  const endereco = document.getElementById("enderecoCliente").value.trim();
+
+  if(!nome){
+    alert("Digite seu nome");
+    return;
+  }
+
+  if(!endereco){
+    alert("Digite seu endereÃ§o");
+    return;
+  }
+
+  if(Object.keys(carrinho).length === 0){
+    alert("Adicione produtos ao carrinho");
+    return;
+  }
+
+  const numeroPedido = gerarNumeroPedido();
+
+  let msg = "ðŸ§¾ Pedido NÂº: #" + numeroPedido + "\n\n";
+  msg += "ðŸ‘¤ Cliente: " + nome + "\n";
+  msg += "ðŸ“ EndereÃ§o: " + endereco + "\n\n";
+  msg += "ðŸ“¦ Itens:\n";
+
+  let total = 0;
+
+  for(let i in carrinho){
+    msg += "- " + produtos[i].nome + " x" + carrinho[i] + "\n";
+    total += produtos[i].preco * carrinho[i];
+  }
+
+  const pagamento = document.getElementById("pagamento").value;
+
+  msg += "\nðŸ’° Total: R$ " + total.toFixed(2);
+  msg += "\nðŸ’³ Pagamento: " + pagamento;
+
+  if(pagamento === "pix"){
+    gerarPix(total);
+  }
+
+  if(pagamento === "dinheiro"){
+    const troco = document.getElementById("valorTroco").value;
+    const semTroco = document.getElementById("semTroco").checked;
+
+    if(semTroco){
+      msg += "\nTroco: NÃ£o precisa";
+    } else if(troco){
+      msg += "\nTroco para: R$ " + parseFloat(troco).toFixed(2);
+    }
+  }
+
+  const link = "https://api.whatsapp.com/send?phone=" +
+               telefoneWhatsapp +
+               "&text=" +
+               encodeURIComponent(msg);
+
+  window.open(link, "_blank");
+}
+
+render();
+</script>
+
+</body>
+</html>
