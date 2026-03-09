@@ -1,1 +1,227 @@
-test
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Delivery Pix</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-bottom:10px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+button{
+padding:10px 14px;
+border:none;
+border-radius:6px;
+background:#00a859;
+color:white;
+cursor:pointer;
+}
+
+#qrcode{
+text-align:center;
+margin-top:20px;
+}
+
+#codigo{
+background:#eee;
+padding:10px;
+margin-top:10px;
+font-size:12px;
+word-break:break-all;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2> Cardápio</h2>
+
+<div id="produtos"></div>
+
+<h3>Total: R$ <span id="total">0.00</span></h3>
+
+<button onclick="finalizar()">Finalizar Pedido</button>
+
+<div id="qrcode"></div>
+<div id="codigo"></div>
+
+<script>
+
+const chavePix="05255555959"
+const nomeRecebedor="Patricia Ribeiro Martins"
+const cidade="RIO DE JANEIRO"
+const telefone="559999999999"
+
+let numeroPedido=Math.floor(Math.random()*9000)+1000
+
+let produtos=[
+{nome:"Hamburguer",preco:15},
+{nome:"Pastel",preco:7},
+{nome:"Coxinha",preco:6},
+{nome:"Refrigerante",preco:5}
+]
+
+let carrinho={}
+
+function render(){
+
+let html=""
+
+produtos.forEach((p,i)=>{
+
+html+=`
+<div class="card">
+
+<b>${p.nome}</b><br>
+R$ ${p.preco}
+
+<br><br>
+
+<button onclick="add(${i})">Adicionar</button>
+
+</div>
+`
+
+})
+
+document.getElementById("produtos").innerHTML=html
+
+}
+
+function add(i){
+
+carrinho[i]=(carrinho[i]||0)+1
+
+atualizar()
+
+}
+
+function atualizar(){
+
+let total=0
+
+for(let i in carrinho){
+
+total+=carrinho[i]*produtos[i].preco
+
+}
+
+document.getElementById("total").innerText=total.toFixed(2)
+
+}
+
+function campo(id,valor){
+
+return id+valor.length.toString().padStart(2,'0')+valor
+
+}
+
+function crc16(payload){
+
+let polinomio=0x1021
+let resultado=0xFFFF
+
+for(let i=0;i<payload.length;i++){
+
+resultado ^= payload.charCodeAt(i)<<8
+
+for(let bit=0;bit<8;bit++){
+
+resultado <<=1
+
+if(resultado & 0x10000){
+
+resultado ^= polinomio
+
+}
+
+resultado &=0xFFFF
+
+}
+
+}
+
+return resultado.toString(16).toUpperCase().padStart(4,'0')
+
+}
+
+function gerarPix(valor){
+
+let valorPix=valor.toFixed(2)
+
+let gui=campo("00","BR.GOV.BCB.PIX")
+let chave=campo("01",chavePix)
+
+let merchant=campo("26",gui+chave)
+
+let adicional=campo("05","070503***")
+
+let payload=
+
+campo("00","01")+
+merchant+
+campo("52","0000")+
+campo("53","986")+
+campo("54",valorPix)+
+campo("58","BR")+
+campo("59",nomeRecebedor)+
+campo("60",cidade)+
+campo("620705","***")+
+"6304"
+
+let crc=crc16(payload)
+
+let codigo=payload+crc
+
+document.getElementById("codigo").innerText=codigo
+
+document.getElementById("qrcode").innerHTML=
+
+`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(codigo)}">`
+
+return codigo
+
+}
+
+function finalizar(){
+
+let total=parseFloat(document.getElementById("total").innerText)
+
+let pix=gerarPix(total)
+
+let msg="Pedido #"+numeroPedido+"%0A"
+
+for(let i in carrinho){
+
+msg+=carrinho[i]+"x "+produtos[i].nome+"%0A"
+
+}
+
+msg+="Total: R$ "+total+"%0A"
+msg+="Pix: "+pix
+
+window.open("https://api.whatsapp.com/send?phone="+telefone+"&text="+msg)
+
+}
+
+render()
+
+</script>
+
+</body>
+</html>
