@@ -1,1 +1,222 @@
-test
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f0f0f;
+color:white;
+padding:20px;
+}
+
+/* PESQUISA */
+
+.searchBox{
+display:flex;
+align-items:center;
+background:#1c1c1c;
+border-radius:30px;
+padding:10px 15px;
+margin-bottom:20px;
+}
+
+.searchBox input{
+background:none;
+border:none;
+color:white;
+font-size:16px;
+width:100%;
+outline:none;
+}
+
+/* PRODUTOS */
+
+.produto{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#1a1a1a;
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+button{
+background:#00c853;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+color:white;
+font-size:16px;
+}
+
+/* CARRINHO */
+
+#carrinho{
+margin-top:20px;
+}
+
+#total{
+font-size:20px;
+margin-top:10px;
+}
+
+/* PIX */
+
+#pixBox{
+text-align:center;
+margin-top:20px;
+display:none;
+}
+
+#qrPix{
+margin:20px auto;
+display:block;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>Cardápio</h2>
+
+<div class="searchBox">
+<input type="text" placeholder="Pesquisar produto..." onkeyup="pesquisar(this.value)">
+</div>
+
+<div id="listaProdutos">
+
+<div class="produto" data-nome="pastel">
+Pastel - R$ 5.00
+<button onclick="addProduto('Pastel',5)">+</button>
+</div>
+
+<div class="produto" data-nome="coxinha">
+Coxinha - R$ 4.00
+<button onclick="addProduto('Coxinha',4)">+</button>
+</div>
+
+<div class="produto" data-nome="refrigerante">
+Refrigerante - R$ 6.00
+<button onclick="addProduto('Refrigerante',6)">+</button>
+</div>
+
+<div class="produto" data-nome="bananinha">
+Bananinha recheada - R$ 2.50
+<button onclick="addProduto('Bananinha',2.5)">+</button>
+</div>
+
+</div>
+
+<h2>Carrinho</h2>
+
+<div id="carrinho"></div>
+
+<div id="total">Total: R$ 0.00</div>
+
+<button onclick="gerarPix()">Gerar PIX</button>
+
+<button onclick="enviarPedido()">Enviar WhatsApp</button>
+
+<div id="pixBox">
+
+<h3>Pagar com PIX</h3>
+
+<img id="qrPix">
+
+<p id="pixCode"></p>
+
+</div>
+
+<script>
+
+let carrinho=[]
+let total=0
+
+let chavePix="Patriciamartinsribeiro512@gmail.com"
+let nomeRecebedor="Patricia Ribeiro Martins"
+let cidade="RIO DE JANEIRO"
+
+function pesquisar(valor){
+
+let produtos=document.querySelectorAll(".produto")
+
+produtos.forEach(p=>{
+
+let nome=p.dataset.nome
+
+if(nome.includes(valor.toLowerCase()))
+p.style.display="flex"
+else
+p.style.display="none"
+
+})
+
+}
+
+function addProduto(nome,valor){
+
+carrinho.push({nome,valor})
+
+total+=valor
+
+atualizarCarrinho()
+
+}
+
+function atualizarCarrinho(){
+
+let div=document.getElementById("carrinho")
+
+div.innerHTML=""
+
+carrinho.forEach(p=>{
+
+div.innerHTML+=p.nome+" - R$ "+p.valor.toFixed(2)+"<br>"
+
+})
+
+document.getElementById("total").innerText="Total: R$ "+total.toFixed(2)
+
+}
+
+function gerarPix(){
+
+if(total<=0) return
+
+let codigo="PIX-"+total.toFixed(2)
+
+document.getElementById("pixCode").innerText=codigo
+
+document.getElementById("qrPix").src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data="+codigo
+
+document.getElementById("pixBox").style.display="block"
+
+}
+
+function enviarPedido(){
+
+let texto="Pedido:%0A"
+
+carrinho.forEach(p=>{
+
+texto+=p.nome+" - R$ "+p.valor.toFixed(2)+"%0A"
+
+})
+
+texto+="%0ATotal: R$ "+total.toFixed(2)
+
+window.open("https://api.whatsapp.com/send?phone=5528999407219&text="+texto)
+
+}
+
+</script>
+
+</body>
+</html>
