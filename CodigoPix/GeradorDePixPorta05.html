@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador Pix</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:linear-gradient(135deg,#00a859,#00914a);
+margin:0;
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+
+background:white;
+width:100%;
+max-width:420px;
+border-radius:18px;
+padding:25px;
+box-shadow:0 15px 40px rgba(0,0,0,.25);
+text-align:center;
+
+}
+
+h2{
+margin-top:0;
+}
+
+input{
+
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:8px;
+border:1px solid #ddd;
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+
+}
+
+.gerar{
+
+background:#00a859;
+color:white;
+font-weight:bold;
+
+}
+
+.copiar{
+
+background:#333;
+color:white;
+
+}
+
+#qrcode{
+
+margin-top:20px;
+
+}
+
+#qrcode img{
+
+width:220px;
+display:block;
+margin:auto;
+
+}
+
+#codigo{
+
+margin-top:15px;
+background:#f1f1f1;
+padding:10px;
+border-radius:8px;
+font-size:12px;
+word-break:break-all;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>ðŸ’³ Gerador Pix</h2>
+
+<input id="chave" placeholder="Chave Pix">
+
+<input id="nome" placeholder="Nome Recebedor">
+
+<input id="cidade" placeholder="Cidade">
+
+<input id="valor" placeholder="Valor (ex: 10.50)">
+
+<button class="gerar" onclick="gerarPix()">Gerar QR Code</button>
+
+<div id="qrcode"></div>
+
+<div id="codigo"></div>
+
+<button class="copiar" onclick="copiar()">Copiar cÃ³digo Pix</button>
+
+</div>
+
+<script>
+
+function campo(id,valor){
+return id+valor.length.toString().padStart(2,'0')+valor
+}
+
+function crc16(payload){
+
+let polinomio=0x1021
+let resultado=0xFFFF
+
+for(let i=0;i<payload.length;i++){
+
+resultado ^= payload.charCodeAt(i)<<8
+
+for(let bit=0;bit<8;bit++){
+
+resultado <<=1
+
+if(resultado & 0x10000){
+resultado ^= polinomio
+}
+
+resultado &=0xFFFF
+
+}
+
+}
+
+return resultado.toString(16).toUpperCase().padStart(4,'0')
+
+}
+
+function gerarPix(){
+
+let chave=document.getElementById("chave").value
+let nome=document.getElementById("nome").value.toUpperCase()
+let cidade=document.getElementById("cidade").value.toUpperCase()
+let valor=document.getElementById("valor").value
+
+if(valor) valor=parseFloat(valor).toFixed(2)
+
+let gui=campo("00","BR.GOV.BCB.PIX")
+let chavePix=campo("01",chave)
+
+let merchant=campo("26",gui+chavePix)
+
+let payload=
+campo("00","01")+
+merchant+
+campo("52","0000")+
+campo("53","986")+
+(valor?campo("54",valor):"")+
+campo("58","BR")+
+campo("59",nome)+
+campo("60",cidade)+
+campo("62",campo("05","***"))+
+"6304"
+
+let crc=crc16(payload)
+
+let codigo=payload+crc
+
+document.getElementById("codigo").innerText=codigo
+
+document.getElementById("qrcode").innerHTML=
+'<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(codigo)+'">'
+
+}
+
+function copiar(){
+
+let texto=document.getElementById("codigo").innerText
+
+navigator.clipboard.writeText(texto)
+
+alert("CÃ³digo Pix copiado!")
+
+}
+
+</script>
+
+</body>
+</html>
