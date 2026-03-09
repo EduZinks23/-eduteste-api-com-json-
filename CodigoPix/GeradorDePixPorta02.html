@@ -1,1 +1,279 @@
-test
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pix Generator Pro</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+margin:0;
+background:linear-gradient(135deg,#00a859,#007a3d);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.app{
+
+background:white;
+width:100%;
+max-width:420px;
+border-radius:20px;
+padding:25px;
+box-shadow:0 20px 40px rgba(0,0,0,.3);
+
+}
+
+h2{
+text-align:center;
+margin-top:0;
+}
+
+input{
+
+width:100%;
+padding:12px;
+margin:7px 0;
+border-radius:8px;
+border:1px solid #ddd;
+font-size:15px;
+
+}
+
+button{
+
+width:100%;
+padding:14px;
+border:none;
+border-radius:8px;
+font-size:15px;
+margin-top:10px;
+cursor:pointer;
+
+}
+
+.gerar{
+background:#00a859;
+color:white;
+font-weight:bold;
+}
+
+.copiar{
+background:#333;
+color:white;
+}
+
+.share{
+background:#1d72f3;
+color:white;
+}
+
+#qrcode{
+
+margin-top:20px;
+text-align:center;
+
+}
+
+#qrcode img{
+
+width:220px;
+
+}
+
+#codigo{
+
+margin-top:15px;
+background:#f1f1f1;
+padding:10px;
+border-radius:8px;
+font-size:12px;
+word-break:break-all;
+
+}
+
+#historico{
+
+margin-top:20px;
+max-height:120px;
+overflow:auto;
+font-size:12px;
+
+}
+
+.item{
+
+background:#f5f5f5;
+padding:6px;
+margin:4px 0;
+border-radius:6px;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<h2> Pix Generator Pro</h2>
+
+<input id="chave" placeholder="Chave Pix">
+
+<input id="nome" placeholder="Nome recebedor">
+
+<input id="cidade" placeholder="Cidade">
+
+<input id="valor" placeholder="Valor (ex: 15.90)">
+
+<input id="descricao" placeholder="Descrição (ex: Pedido 123)">
+
+<button class="gerar" onclick="gerarPix()">Gerar Pix</button>
+
+<div id="qrcode"></div>
+
+<div id="codigo"></div>
+
+<button class="copiar" onclick="copiarPix()">Copiar código Pix</button>
+
+<button class="share" onclick="compartilhar()">Compartilhar</button>
+
+<div id="historico"></div>
+
+</div>
+
+<script>
+
+let historico=[]
+
+function campo(id,valor){
+return id+valor.length.toString().padStart(2,'0')+valor
+}
+
+function crc16(payload){
+
+let polinomio=0x1021
+let resultado=0xFFFF
+
+for(let i=0;i<payload.length;i++){
+
+resultado ^= payload.charCodeAt(i)<<8
+
+for(let bit=0;bit<8;bit++){
+
+resultado <<=1
+
+if(resultado & 0x10000){
+resultado ^= polinomio
+}
+
+resultado &=0xFFFF
+
+}
+
+}
+
+return resultado.toString(16).toUpperCase().padStart(4,'0')
+
+}
+
+function gerarPix(){
+
+let chave=document.getElementById("chave").value
+let nome=document.getElementById("nome").value.toUpperCase()
+let cidade=document.getElementById("cidade").value.toUpperCase()
+let valor=document.getElementById("valor").value
+let descricao=document.getElementById("descricao").value
+
+if(valor) valor=parseFloat(valor).toFixed(2)
+
+let gui=campo("00","BR.GOV.BCB.PIX")
+let chavePix=campo("01",chave)
+
+let merchant=campo("26",gui+chavePix)
+
+let adicional=campo("05",descricao||"***")
+
+let payload=
+campo("00","01")+
+merchant+
+campo("52","0000")+
+campo("53","986")+
+(valor?campo("54",valor):"")+
+campo("58","BR")+
+campo("59",nome)+
+campo("60",cidade)+
+campo("62",adicional)+
+"6304"
+
+let crc=crc16(payload)
+
+let codigo=payload+crc
+
+document.getElementById("codigo").innerText=codigo
+
+document.getElementById("qrcode").innerHTML=
+'<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(codigo)+'">'
+
+historico.unshift(descricao+" - R$ "+valor)
+
+mostrarHistorico()
+
+}
+
+function copiarPix(){
+
+let texto=document.getElementById("codigo").innerText
+
+navigator.clipboard.writeText(texto)
+
+alert("Pix copiado!")
+
+}
+
+function compartilhar(){
+
+let texto=document.getElementById("codigo").innerText
+
+if(navigator.share){
+
+navigator.share({
+title:"Pix",
+text:texto
+})
+
+}else{
+
+alert("Compartilhamento não suportado")
+
+}
+
+}
+
+function mostrarHistorico(){
+
+let html=""
+
+historico.forEach(p=>{
+html+=`<div class="item">${p}</div>`
+})
+
+document.getElementById("historico").innerHTML=html
+
+}
+
+</script>
+
+</body>
+</html>
