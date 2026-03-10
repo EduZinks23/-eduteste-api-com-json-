@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Custom Home</title>
+<style>
+  :root {
+    --bg-main: #0B141A;
+    --bg-card: #111B21;
+    --text-main: #E9EDEF;
+    --text-muted: #8696A0;
+    --green: #25D366;
+    --border: #1F2C34;
+  }body { margin: 0; font-family: Arial, sans-serif; background: var(--bg-main); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 20px; }
+
+h1 { margin-bottom: 20px; }
+
+.card { background: var(--bg-card); padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+
+input { padding: 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; font-size: 16px; color: var(--text-main); background: #1A1A1A; }
+
+button { padding: 12px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer; font-weight: bold; transition: transform 0.2s, background 0.2s, box-shadow 0.2s; }
+
+button:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(0,0,0,0.4); } button:active { transform: scale(0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+
+.btn-send-now { background: var(--green); color: #fff; } .btn-send-now:active { background: #1DA851; } .btn-add-list { background: #34C759; color: #fff; } .btn-add-list:active { background: #28A745; } .btn-paste { background: #333333; color: #fff; } .btn-paste:active { background: #555555; } .btn-list-send { background: var(--green); color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 6px; margin-left: 6px; } .btn-list-send:active { background: #1DA851; } .btn-remove { background: #FF3B30; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; margin-left: 6px; } .btn-remove:active { background: #cc2a24; }
+
+.message-list { margin-top: 20px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 500px; scroll-behavior: smooth; }
+
+.message-item { background: #1A1A1A; padding: 10px; border-radius: 12px; word-break: break-word; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; transform: translateY(-20px); animation: fadeInUp 0.3s forwards; transition: transform 0.3s, box-shadow 0.3s, background 0.3s; }
+
+.message-item:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); background: #222; } @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+.message-content { display: flex; flex-direction: column; align-items: center; } .message-item span { color: var(--text-muted); font-size: 14px; margin-bottom: 4px; } .message-buttons { display: flex; align-items: center; justify-content: center; } .whatsapp-logo { width: 40px; height: 40px; margin-bottom: 6px; } </style>
+
+</head>
+<body>
+<h1>WhatsApp Custom Home</h1>
+<div class="card">
+  <input type="text" id="phone" placeholder="Número do telefone (opcional)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+  <input type="text" id="message" placeholder="Mensagem">
+  <button class="btn-send-now" onclick="sendNow()">Enviar Mensagem Agora</button>
+  <button class="btn-add-list" onclick="addMessage()">Adicionar à Lista</button>
+  <button class="btn-paste" onclick="pasteNumber()">Colar Número</button>
+</div><div class="message-list" id="messageList"></div><script>
+  const logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg';
+
+  function sendNow() {
+    const phone = document.getElementById('phone').value;
+    const message = document.getElementById('message').value;
+    if (!message) { alert('Preencha a mensagem'); return; }
+    let url = phone ? `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0` : `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  }
+
+  function addMessage() {
+    const phone = document.getElementById('phone').value;
+    const message = document.getElementById('message').value;
+    if (!message) { alert('Preencha a mensagem'); return; }
+
+    const messageList = document.getElementById('messageList');
+    const div = document.createElement('div');
+    div.className = 'message-item';
+
+    const img = document.createElement('img');
+    img.src = logoUrl;
+    img.className = 'whatsapp-logo';
+    div.appendChild(img);
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'message-content';
+    contentDiv.innerHTML = phone ? `<span>${phone}</span>${message}` : message;
+
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.className = 'message-buttons';
+
+    const btnSend = document.createElement('button');
+    btnSend.className = 'btn-list-send';
+    btnSend.textContent = 'Enviar';
+    btnSend.onclick = () => {
+      const listMessage = message;
+      const listPhone = phone;
+      let url = listPhone ? `https://api.whatsapp.com/send/?phone=${listPhone}&text=${encodeURIComponent(listMessage)}&type=phone_number&app_absent=0` : `https://wa.me/?text=${encodeURIComponent(listMessage)}`;
+      window.open(url, '_blank');
+    };
+
+    const btnRemove = document.createElement('button');
+    btnRemove.className = 'btn-remove';
+    btnRemove.textContent = 'Remover';
+    btnRemove.onclick = () => div.remove();
+
+    buttonsDiv.appendChild(btnSend);
+    buttonsDiv.appendChild(btnRemove);
+
+    div.appendChild(contentDiv);
+    div.appendChild(buttonsDiv);
+    messageList.appendChild(div);
+
+    document.getElementById('message').value = '';
+  }
+
+  function pasteNumber() {
+    navigator.clipboard.readText().then(text => { document.getElementById('phone').value = text.replace(/[^0-9]/g,''); }).catch(() => { alert('Não foi possível colar do clipboard'); });
+  }
+
+  const messageList = document.getElementById('messageList');
+  messageList.addEventListener('scroll', () => {
+    const items = messageList.querySelectorAll('.message-item');
+    items.forEach(item => {
+      const rect = item.getBoundingClientRect();
+      if (rect.top < window.innerHeight) { item.style.transform = 'translateY(0)'; item.style.opacity = '1'; }
+    });
+  });
+</script></body>
+</html>
