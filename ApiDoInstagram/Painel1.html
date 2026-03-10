@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscar no Instagram</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.box {
+    max-width: 420px;
+    margin: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: #1da1f2;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button.app {
+    background: #e1306c;
+}
+
+button:active {
+    opacity: 0.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Buscar Pessoas no Instagram</h2>
+
+    <input id="q" placeholder="Digite @usuario ou nome">
+
+    <div class="buttons">
+        <button onclick="abrirNavegador()">Aplicativo</button>
+        <button class="app" onclick="abrirApp()">Navegador</button>
+    </div>
+</div>
+
+<script>
+function getQuery() {
+    let q = document.getElementById("q").value.trim();
+    if (!q) {
+        alert("Digite algo para buscar");
+        return null;
+    }
+    return q;
+}
+
+function abrirNavegador() {
+    let q = getQuery();
+    if (!q) return;
+
+    if (q.startsWith("@")) {
+        q = q.replace("@", "");
+        window.location.href = "https://www.instagram.com/" + encodeURIComponent(q);
+    } else {
+        window.location.href =
+            "instagram://user?username=" +
+            encodeURIComponent(q);
+    }
+}
+
+function abrirApp() {
+    let q = getQuery();
+    if (!q) return;
+
+    if (q.startsWith("@")) {
+        q = q.replace("@", "");
+        // Deep link perfil
+        window.location.href = "instagram://instagram.com/@" + encodeURIComponent(q);
+    } else {
+        // Busca no app
+        window.location.href =
+            "instagram://instagram.com/@" +
+            encodeURIComponent(q);
+    }
+
+    // Fallback caso o app não esteja instalado
+    setTimeout(function () {
+        abrirNavegador();
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
