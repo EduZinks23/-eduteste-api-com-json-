@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Lista</title>
+
+<style>
+:root {
+  --header: #25D366;
+  --btn: #25D366;
+  --bg: #f0f2f5;
+  --card: #ffffff;
+  --text: #111111;
+
+  --input-bg: #ffffff;
+  --input-text: #111111;
+  --input-placeholder: #888888;
+  --input-border: #cccccc;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* HEADER */
+.header {
+  background: var(--header);
+  color: #fff;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* FORM */
+.form {
+  background: var(--card);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form input[type="text"] {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 14px;
+}
+
+.form input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.form input:focus {
+  outline: none;
+  border-color: var(--btn);
+}
+
+.form button {
+  background: var(--btn);
+  border: none;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* CUSTOMIZAÇÃO */
+.custom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.custom label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* LISTA */
+.list {
+  padding: 8px;
+}
+
+.item {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* AVATAR */
+.avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* INFO */
+.info {
+  flex: 1;
+}
+
+.number {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.msg {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* AÇÕES */
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions button {
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.send {
+  background: var(--btn);
+  color: #fff;
+}
+
+.remove {
+  background: #e53935;
+  color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">WhatsApp Send</div>
+
+<div class="form">
+  <input type="text" id="number" placeholder="Numero (opcional)" inputmode="numeric">
+  <input type="text" id="message" placeholder="Mensagem">
+  <button onclick="addItem()">Adicionar a lista</button>
+
+  <div class="custom">
+    <label>Topo <input type="color" value="#25D366" onchange="setVar('--header', this.value)"></label>
+    <label>Botoes <input type="color" value="#25D366" onchange="setVar('--btn', this.value)"></label>
+    <label>Fundo <input type="color" value="#f0f2f5" onchange="setVar('--bg', this.value)"></label>
+    <label>Card <input type="color" value="#ffffff" onchange="setVar('--card', this.value)"></label>
+    <label>Texto <input type="color" value="#111111" onchange="setVar('--text', this.value)"></label>
+
+    <label>Input fundo <input type="color" value="#ffffff" onchange="setVar('--input-bg', this.value)"></label>
+    <label>Texto input <input type="color" value="#111111" onchange="setVar('--input-text', this.value)"></label>
+    <label>Dica input <input type="color" value="#888888" onchange="setVar('--input-placeholder', this.value)"></label>
+    <label>Borda input <input type="color" value="#cccccc" onchange="setVar('--input-border', this.value)"></label>
+  </div>
+</div>
+
+<div class="list" id="list"></div>
+
+<script>
+
+
+let avatarId = 1;
+
+function addItem() {
+  const number = document.getElementById("number").value.replace(/\D/g, "");
+  const message = document.getElementById("message").value.trim();
+
+  if (!message) {
+    alert("Digite uma mensagem");
+    return;
+  }
+
+
+
+
+
+  avatarId++;
+  if (avatarId > 70) avatarId = 1;
+
+  const item = document.createElement("div");
+  item.className = "item";
+
+  item.innerHTML = `
+    <div class="avatar">
+      <img src="https://i.pravatar.cc/150?img=${avatarId}">
+    </div>
+    <div class="info">
+      <div class="number">${number || "Sem numero"}</div>
+      <div class="msg">${message}</div>
+    </div>
+    <div class="actions">
+      <button class="send" onclick="sendMessage('${number}', '${message}')">Enviar</button>
+      <button class="remove" onclick="this.closest('.item').remove()">Remover</button>
+    </div>
+  `;
+
+  document.getElementById("list").appendChild(item);
+  document.getElementById("number").value = "";
+  document.getElementById("message").value = "";
+}
+
+function sendMessage(number, message) {
+  const url = number
+    ? "https://api.whatsapp.com/send?phone=55" + number + "&text=" + encodeURIComponent(message)
+    : "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+
+  window.open(url, "_blank");
+}
+
+function setVar(variable, value) {
+  document.documentElement.style.setProperty(variable, value);
+}
+</script>
+
+</body>
+</html>
