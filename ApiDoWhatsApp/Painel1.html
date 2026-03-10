@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Instagram Launcher - Lista Animada</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+    min-height: 100vh;
+    background: #000;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+.card {
+    width: 100%;
+    max-width: 480px;
+    background: #121212;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.8);
+}
+.logo {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    background: linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400% 400%;
+    animation: gradientAnim 6s ease infinite;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    margin-bottom: 12px;
+    background: linear-gradient(45deg,#1e1f22,#1c1c1c);
+    color: #fff;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+input:focus { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,.3); }
+
+.buttons { display: flex; gap: 8px; margin-bottom: 16px; }
+button {
+    position: relative;
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
+    background-size: 400% 400%;
+    animation: gradientAnim 6s ease infinite;
+    transition: transform .15s ease, opacity .15s ease;
+}
+button:active { transform: scale(0.95); opacity: 0.9; }
+
+button.secondary.pink {
+    background: linear-gradient(90deg,#ff7eb9 50%,#ff65a3 50%);
+    background-size: 200% 100%;
+    transition: transform .15s ease, background-position .3s ease, opacity .15s ease;
+}
+button.secondary.pink:active { transform: scale(0.95); opacity: 0.9; background-position: 100% 0; }
+
+button.secondary.red {
+    background: linear-gradient(90deg,#ff1744 50%,#f50057 50%);
+    background-size: 200% 100%;
+    transition: transform .15s ease, background-position .3s ease, opacity .15s ease;
+}
+button.secondary.red:active { transform: scale(0.95); opacity: 0.9; background-position: 100% 0; }
+
+.lista {
+    margin-top: 10px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-height: 400px;
+    overflow-y:auto;
+    scroll-behavior: smooth;
+}
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #1c1c1c;
+    border-radius: 12px;
+    padding: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform .3s ease, opacity .3s ease, background .15s ease;
+}
+.item.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.item:hover { background: #2c2c2c; }
+.item img { width: 60px; height: 60px; border-radius:50%; margin-bottom:8px; cursor:pointer; }
+.item span { margin-bottom:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff; text-align:center; }
+
+.item-buttons {
+    display: flex;
+    gap:8px;
+    justify-content:center;
+    width:100%;
+}
+.item-buttons button {
+    flex:0;
+    padding:5px 12px;
+    border-radius:8px;
+    font-size:12px;
+    cursor:pointer;
+    color:#fff;
+    background: linear-gradient(45deg,#ff1744,#f50057,#ff4081,#ff1744);
+    background-size:400% 400%;
+    animation: pulseGrad 3s infinite;
+}
+.item-buttons button:hover { transform:scale(1.05); }
+
+.footer { text-align: center; font-size: 12px; margin-top: 12px; color: #aaa; }
+
+@keyframes gradientAnim {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+@keyframes pulseGrad {0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+
+.prompt-overlay {
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.85);
+    display:flex; justify-content:center; align-items:center;
+    z-index:9999;
+}
+.prompt-box {
+    background:#1c1c1c; padding:20px; border-radius:12px; max-width:300px; width:90%;
+    text-align:center; color:#fff; display:flex; flex-direction:column; gap:8px;
+}
+.prompt-box input { width:100%; padding:10px; border-radius:8px; border:none; background:#000; color:#fff; }
+.prompt-box button { padding:8px; border:none; border-radius:8px; background:linear-gradient(45deg,#ff1744,#f50057,#ff4081,#ff1744); color:#fff; cursor:pointer; animation:pulseGrad 3s infinite; }
+</style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">Mini Instagram Launcher</div>
+    <input id="q" placeholder="Digite @usuario ou cole link">
+    <div class="buttons">
+        <button onclick="abrirInstagram()">Abrir perfil</button>
+        <button class="secondary pink" onclick="colarClipboard()">Colar</button>
+        <button class="secondary red" onclick="adicionarLista()">Adicionar à lista</button>
+    </div>
+    <div class="lista" id="lista"></div>
+    <div class="footer">Clique na imagem para abrir no Instagram</div>
+</div>
+
+<script>
+function validarInput(text){
+    if(!text || text.trim()==='') return false;
+    text = text.trim();
+    const instagramRegex = /^https:\/\/www\.instagram\.com\/[^\s/]+\/?$/i;
+    if(instagramRegex.test(text)) return true;
+    if(!text.startsWith('https://')) return true;
+    return false;
+}
+
+function abrirInstagram(){
+    let q=document.getElementById("q").value.trim();
+    if(!validarInput(q)){ alert("Digite um link do Instagram ou texto válido"); return; }
+    let user=q.replace(/^https?:\/\/(wa.me\.)?text=\//i,"").replace(/\/.*$/,"").replace(/^@/,"");
+    if(window.Android) Android.openInstagram(user);
+    else window.open("https://wa.me/?text=" + encodeURIComponent(user), "_blank");
+}
+
+async function colarClipboard(){
+    try{
+        let text = window.Android ? Android.getClipboard() : await navigator.clipboard.readText();
+        if(!validarInput(text)){ alert("Área de transferência inválida"); return; }
+        document.getElementById("q").value=text.trim();
+    }catch(e){ alert("Não foi possível acessar o clipboard."); }
+}
+
+function adicionarLista(){
+    let q=document.getElementById("q").value.trim();
+    if(!validarInput(q)){ alert("Digite um link do Instagram ou texto válido"); return; }
+    let user=q.replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/\/.*$/,"").replace(/^@/,"");
+
+    const lista=document.getElementById("lista");
+    const div=document.createElement('div');
+    div.className='item';
+
+    const img=document.createElement('img');
+    img.src='https://www.instagram.com/'+encodeURIComponent(user)+'/?__a=1';
+    img.onerror=function(){ img.src='https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg'; };
+    img.alt='Instagram';
+    img.onclick=function(){ if(window.Android) Android.openInstagram(user); else window.open("https://www.instagram.com/"+encodeURIComponent(user), "_blank"); };
+
+    const span=document.createElement('span');
+    span.textContent=user;
+
+    const buttonsDiv=document.createElement('div');
+    buttonsDiv.className='item-buttons';
+
+    const removeBtn=document.createElement('button');
+    removeBtn.textContent='Remover';
+    removeBtn.onclick=function(){ div.remove(); };
+
+    const shareBtn=document.createElement('button');
+    shareBtn.textContent='Compartilhar';
+    shareBtn.onclick=function(){ compartilhar(user); };
+
+    const copyBtn=document.createElement('button');
+    copyBtn.textContent='Copiar';
+    copyBtn.onclick=function(){ mostrarPromptCopiar('https://www.instagram.com/'+encodeURIComponent(user)); };
+
+    buttonsDiv.appendChild(removeBtn);
+    buttonsDiv.appendChild(shareBtn);
+    buttonsDiv.appendChild(copyBtn);
+
+    div.appendChild(img);
+    div.appendChild(span);
+    div.appendChild(buttonsDiv);
+
+    lista.appendChild(div);
+
+    // Animação ao adicionar
+    setTimeout(()=>{ div.classList.add('show'); }, 50);
+
+    document.getElementById("q").value='';
+}
+
+function compartilhar(user){
+    const url='https://www.instagram.com/'+encodeURIComponent(user);
+    if(window.Android && Android.shareText){ Android.shareText(url); }
+    else if(navigator.share){
+        navigator.share({title:'Compartilhar Instagram', text:url})
+        .catch(err=>console.log(err));
+    } else {
+        mostrarPromptCopiar(url);
+    }
+}
+
+
+
+
+/* PROMPT BONITO PARA COPIAR LINK AUTOMÁTICO */
+
+
+
+/* PROMPT BONITO COM BOTÕES SEPARADOS E GRADIENTE PULSANTE */
+
+function mostrarPromptCopiar(url){
+    const overlay = document.createElement('div');
+    overlay.className = 'prompt-overlay';
+
+    const box = document.createElement('div');
+    box.className = 'prompt-box';
+    box.innerHTML = `<div style="margin-bottom:12px; font-weight:bold;">Copie o link abaixo:</div>`;
+
+    const input = document.createElement('input');
+    input.value = url;
+    input.readOnly = true; // evita edição
+    input.onclick = () => input.select(); // seleciona ao clicar
+    box.appendChild(input);
+
+    // Container dos botões separados
+    const btnContainer = document.createElement('div');
+    btnContainer.style.display = 'flex';
+    btnContainer.style.justifyContent = 'space-between';
+    btnContainer.style.marginTop = '12px';
+    btnContainer.style.gap = '10px';
+
+    // Botão Copiar com gradiente pulsante
+    const copyBtn = document.createElement('button');
+    copyBtn.textContent = 'Copiar';
+    copyBtn.style.flex = '1';
+    copyBtn.style.background = 'linear-gradient(45deg,#ff1744,#f50057,#ff4081,#ff1744)';
+    copyBtn.style.backgroundSize = '400% 400%';
+    copyBtn.style.animation = 'pulseGrad 3s infinite';
+    copyBtn.style.color = '#fff';
+    copyBtn.style.border = 'none';
+    copyBtn.style.borderRadius = '8px';
+    copyBtn.style.padding = '8px';
+    copyBtn.style.cursor = 'pointer';
+    copyBtn.onclick = function(){
+        input.select();
+        document.execCommand('copy');
+        copyBtn.textContent = 'Copiado!';
+        setTimeout(()=>{copyBtn.textContent='Copiar';},1500);
+    };
+
+    // Botão Fechar com gradiente pulsante
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Fechar';
+    closeBtn.style.flex = '1';
+    closeBtn.style.background = 'linear-gradient(45deg,#4f5bd5,#962fbf,#d62976,#fa7e1e)';
+    closeBtn.style.backgroundSize = '400% 400%';
+    closeBtn.style.animation = 'pulseGrad 3s infinite';
+    closeBtn.style.color = '#fff';
+    closeBtn.style.border = 'none';
+    closeBtn.style.borderRadius = '8px';
+    closeBtn.style.padding = '8px';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.onclick = function(){ overlay.remove(); };
+
+    btnContainer.appendChild(copyBtn);
+    btnContainer.appendChild(closeBtn);
+    box.appendChild(btnContainer);
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+}
+
+
+
+
+
+
+
+
+
+
+// Anima itens ao rolar
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting) entry.target.classList.add('show');
+    });
+}, {threshold:0.1});
+const listaObserver = document.getElementById('lista');
+new MutationObserver((mutations)=>{
+    mutations.forEach(m=>{
+        m.addedNodes.forEach(n=>{
+            if(n.classList && n.classList.contains('item')) observer.observe(n);
+        });
+    });
+}).observe(listaObserver,{childList:true});
+
+
+</script>
+</body>
+</html>
