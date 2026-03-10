@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Instagram Launcher - Lista Animada</title>
+<title>Whatsapp Send Messages</title>
 <style>
 * { box-sizing: border-box; margin:0; padding:0; }
 body {
     min-height: 100vh;
-    background: #000;
+    background: linear-gradient(45deg,#25D366,#1DA851,#008069,#128C7E,#008069);
     font-family: Arial, sans-serif;
-    color: #fff;
+    color: #ff1744;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 0px;
 }
 .card {
     width: 100%;
     max-width: 480px;
-    background: #121212;
-    border-radius: 18px;
+    background: linear-gradient(45deg,#25D366,#1DA851,#008069,#128C7E,#008069);
+    border-radius: 0px;
     padding: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,.8);
 }
@@ -37,16 +37,19 @@ body {
 input {
     width: 100%;
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 5px;
     border: none;
     outline: none;
     font-size: 15px;
     margin-bottom: 12px;
-    background: linear-gradient(45deg,#1e1f22,#1c1c1c);
-    color: #fff;
+    background: linear-gradient(45deg,#25D366,#25D366,#FFFFFF,#25D366);
+    background-size:400% 400%;
+    animation: pulseGrad 3s infinite;
+}
+    color: #ff1744;
     transition: transform .15s ease, box-shadow .15s ease;
 }
-input:focus { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,.3); }
+input:focus { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,0); }
 
 .buttons { display: flex; gap: 8px; margin-bottom: 16px; }
 button {
@@ -58,7 +61,7 @@ button {
     font-size: 13px;
     cursor: pointer;
     color: #fff;
-    background: linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
+    background: linear-gradient(45deg,#202C33,#005C4B,#1DA851,#25D366,#4f5bd5);
     background-size: 400% 400%;
     animation: gradientAnim 6s ease infinite;
     transition: transform .15s ease, opacity .15s ease;
@@ -66,14 +69,14 @@ button {
 button:active { transform: scale(0.95); opacity: 0.9; }
 
 button.secondary.pink {
-    background: linear-gradient(90deg,#ff7eb9 50%,#ff65a3 50%);
+    background: linear-gradient(90deg,#25D366 50%,#1DA851 50%);
     background-size: 200% 100%;
     transition: transform .15s ease, background-position .3s ease, opacity .15s ease;
 }
 button.secondary.pink:active { transform: scale(0.95); opacity: 0.9; background-position: 100% 0; }
 
 button.secondary.red {
-    background: linear-gradient(90deg,#ff1744 50%,#f50057 50%);
+    background: linear-gradient(90deg,#111B21 50%,#202C33 50%);
     background-size: 200% 100%;
     transition: transform .15s ease, background-position .3s ease, opacity .15s ease;
 }
@@ -91,14 +94,19 @@ button.secondary.red:active { transform: scale(0.95); opacity: 0.9; background-p
 .item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background: #1c1c1c;
-    border-radius: 12px;
+    align-items: center;   
+    background: linear-gradient(45deg,#000000 50%,#1DA851 50%);
+    background-size: 200% 100%;
+    border-radius: 15px;
     padding: 12px;
     opacity: 0;
     transform: translateY(20px);
     transition: transform .3s ease, opacity .3s ease, background .15s ease;
+    animation: pulseGrad 3s infinite;
 }
+
+
+
 .item.show {
     opacity: 1;
     transform: translateY(0);
@@ -120,13 +128,13 @@ button.secondary.red:active { transform: scale(0.95); opacity: 0.9; background-p
     font-size:12px;
     cursor:pointer;
     color:#fff;
-    background: linear-gradient(45deg,#ff1744,#f50057,#ff4081,#ff1744);
+    background: linear-gradient(45deg,#008069,#128C7E,#ff4081,#008069);
     background-size:400% 400%;
     animation: pulseGrad 3s infinite;
 }
 .item-buttons button:hover { transform:scale(1.05); }
 
-.footer { text-align: center; font-size: 12px; margin-top: 12px; color: #aaa; }
+.footer { text-align: center; font-size: 18px; margin-top: 12px; color: #aaa; }
 
 @keyframes gradientAnim {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 @keyframes pulseGrad {0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
@@ -148,15 +156,15 @@ button.secondary.red:active { transform: scale(0.95); opacity: 0.9; background-p
 </head>
 <body>
 <div class="card">
-    <div class="logo">Mini Instagram Launcher</div>
-    <input id="q" placeholder="Digite @usuario ou cole link">
+    <div class="logo">Whatsapp Send Messages</div>
+    <input id="q" placeholder="Digite sua mensagem">
     <div class="buttons">
-        <button onclick="abrirInstagram()">Abrir perfil</button>
+        <button onclick="abrirInstagram()">Enviar Mensagem</button>
         <button class="secondary pink" onclick="colarClipboard()">Colar</button>
         <button class="secondary red" onclick="adicionarLista()">Adicionar à lista</button>
     </div>
     <div class="lista" id="lista"></div>
-    <div class="footer">Clique na imagem para abrir no Instagram</div>
+    <div class="footer">Clique na imagem para abrir no Whatsapp</div>
 </div>
 
 <script>
@@ -171,7 +179,7 @@ function validarInput(text){
 
 function abrirInstagram(){
     let q=document.getElementById("q").value.trim();
-    if(!validarInput(q)){ alert("Digite um link do Instagram ou texto válido"); return; }
+    if(!validarInput(q)){ alert("Digite sua mensagem"); return; }
     let user=q.replace(/^https?:\/\/(wa.me\.)?text=\//i,"").replace(/\/.*$/,"").replace(/^@/,"");
     if(window.Android) Android.openInstagram(user);
     else window.open("https://wa.me/?text=" + encodeURIComponent(user), "_blank");
@@ -196,8 +204,8 @@ function adicionarLista(){
 
     const img=document.createElement('img');
     img.src='https://www.instagram.com/'+encodeURIComponent(user)+'/?__a=1';
-    img.onerror=function(){ img.src='https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg'; };
-    img.alt='Instagram';
+    img.onerror=function(){ img.src='https://img.icons8.com/?size=100&id=aUugRyDZVcWE&format=png&color=000000'; };
+    img.alt='Whatsapp';
     img.onclick=function(){ if(window.Android) Android.openInstagram(user); else window.open("https://www.instagram.com/"+encodeURIComponent(user), "_blank"); };
 
     const span=document.createElement('span');
