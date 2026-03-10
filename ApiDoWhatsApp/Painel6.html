@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista WhatsApp</title>
+
+<style>
+:root {
+  --main: #25D366;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f0f2f5;
+}
+
+/* TOPO */
+.header {
+  background: var(--main);
+  color: #fff;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* FORM */
+.form {
+  background: #fff;
+  padding: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.form input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form button {
+  background: var(--main);
+  border: none;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* COLOR PICKER */
+.color-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.color-box label {
+  font-size: 14px;
+}
+
+/* LISTA */
+.list {
+  padding: 8px;
+}
+
+.item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* FOTO */
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TEXTO */
+.info {
+  flex: 1;
+}
+
+.number {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.msg {
+  font-size: 13px;
+  color: #555;
+}
+
+/* BOTÕES */
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions button {
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.send {
+  background: var(--main);
+  color: #fff;
+}
+
+.remove {
+  background: #e53935;
+  color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">WhatsApp</div>
+
+<div class="form">
+  <input type="text" id="number" placeholder="Número (opcional)" inputmode="numeric">
+  <input type="text" id="message" placeholder="Mensagem">
+  <button onclick="addItem()">Adicionar</button>
+
+  <div class="color-box">
+    <label>Cor do app:</label>
+    <input type="color" value="#25D366" onchange="changeColor(this.value)">
+  </div>
+</div>
+
+<div class="list" id="list"></div>
+
+<script>
+function addItem() {
+  const number = document.getElementById("number").value.replace(/\D/g, "");
+  const message = document.getElementById("message").value.trim();
+
+  if (!message) {
+    alert("Digite uma mensagem");
+    return;
+  }
+
+  const item = document.createElement("div");
+  item.className = "item";
+
+  item.innerHTML = `
+    <div class="avatar"></div>
+    <div class="info">
+      <div class="number">${number || "Sem número"}</div>
+      <div class="msg">${message}</div>
+    </div>
+    <div class="actions">
+      <button class="send" onclick="sendMessage('${number}', '${message}')">Enviar</button>
+      <button class="remove" onclick="this.closest('.item').remove()">Remover</button>
+    </div>
+  `;
+
+  document.getElementById("list").appendChild(item);
+  document.getElementById("number").value = "";
+  document.getElementById("message").value = "";
+}
+
+
+function sendMessage(number, message) {
+  let url = "";
+
+  if (number) {
+    url = "https://api.whatsapp.com/send?phone=55" 
+          + number + 
+          "&text=" + encodeURIComponent(message);
+  } else {
+    url = "https://api.whatsapp.com/send?text=" 
+          + encodeURIComponent(message);
+  }
+
+  window.open(url, "_blank");
+}
+
+
+function changeColor(color) {
+  document.documentElement.style.setProperty("--main", color);
+}
+</script>
+
+</body>
+</html>
