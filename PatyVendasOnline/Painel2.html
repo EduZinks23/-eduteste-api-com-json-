@@ -1,1 +1,692 @@
-test
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Simples De Vendas</title>
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+--primary:#ea1d2c;
+--bg:#f5f5f5;
+--card:#fff;
+}
+
+body{
+font-family:Arial;
+background:var(--bg);
+}
+
+/* HEADER */
+
+header{
+background:var(--primary);
+color:#fff;
+padding:16px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+/* PRODUTOS */
+
+#produtos{
+padding:12px;
+}
+
+.card{
+background:#fff;
+border-radius:14px;
+overflow:hidden;
+margin-bottom:14px;
+box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+
+.banner{
+position:relative;
+aspect-ratio:16/9;
+}
+
+.banner img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* CONTROLE */
+
+.controle{
+position:absolute;
+bottom:10px;
+right:10px;
+background:#fff;
+border-radius:30px;
+display:flex;
+align-items:center;
+gap:8px;
+padding:5px 10px;
+box-shadow:0 4px 10px rgba(0,0,0,.3);
+}
+
+.controle button{
+border:none;
+background:var(--primary);
+color:#fff;
+width:28px;
+height:28px;
+border-radius:50%;
+font-size:18px;
+cursor:pointer;
+}
+
+.qtd{
+font-weight:bold;
+min-width:20px;
+text-align:center;
+}
+
+/* INFO */
+
+.info{
+padding:12px;
+display:flex;
+justify-content:space-between;
+}
+
+/* CARRINHO */
+
+#carrinho{
+background:#fff;
+margin:12px;
+padding:12px;
+border-radius:12px;
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+margin:6px 0;
+}
+
+
+
+
+/*BUSCAR ITENS */
+
+.searchBox{
+
+display:flex;
+align-items:center;
+background:#fff;
+padding:10px 12px;
+border-radius:10px;
+margin:10px;
+box-shadow:0.0px 0px rgba(0,0,0,.08);
+transition:.3s;
+
+}
+
+.searchBox:focus-within{
+
+box-shadow:0.0px 0px rgba(0,0,0,.18);
+transform:scale(1.02);
+
+}
+
+.searchBox input{
+
+flex:1;
+border:none;
+outline:none;
+font-size:14px;
+padding:0px;
+
+}
+
+.icon{
+
+width:20px;
+margin-right:8px;
+color:#888;
+
+}
+
+.clearBtn{
+
+border:none;
+background:#eee;
+width:20px;
+height:20px;
+border-radius:50%;
+cursor:pointer;
+font-size:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+.clearBtn:hover{
+
+background:#ddd;
+
+}
+
+
+
+/* TOTAL */
+
+#totalBox{
+margin:12px;
+background:#fff3f4;
+border:2px dashed var(--primary);
+padding:12px;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+
+/* FORM */
+
+.form{
+padding:12px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:6px 0;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+/* PIX */
+
+#pixBox{
+display:none;
+background:#fff;
+padding:12px;
+margin:12px;
+border-radius:12px;
+text-align:center;
+}
+
+#pixCode{
+word-break:break-all;
+font-size:12px;
+}
+
+/* BOTÕES */
+
+button{
+cursor:pointer;
+}
+
+.copyBtn{
+margin-top:6px;
+padding:8px 12px;
+background:#333;
+color:#fff;
+border:none;
+border-radius:6px;
+}
+
+#btnFinalizar{
+position:fixed;
+  bottom:15px;
+  right:15px;
+  background:#25D366;
+  color:#fff;
+  border:none;
+  padding:14px 18px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ANIMAÇÃO */
+
+@keyframes pop{
+0%{transform:scale(1)}
+50%{transform:scale(1.2)}
+100%{transform:scale(1)}
+}
+
+.pop{
+animation:pop .3s;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>Painel Simples De Vendas</header>
+
+<div class="searchBox">
+
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"
+stroke="currentColor"
+stroke-width="2"
+fill="none"
+stroke-linecap="round"/>
+</svg>
+
+<input 
+type="text" 
+id="buscar" 
+placeholder="Buscar produtos..."
+onkeyup="buscarProduto()"
+>
+
+<button class="clearBtn" onclick="limparBusca()">✕</button>
+
+</div>
+
+
+
+<div id="produtos"></div>
+
+<div id="carrinho">
+<h3>🧾 Seu pedido</h3>
+<div id="listaCarrinho">Carrinho vazio</div>
+</div>
+
+<div id="totalBox">
+Total: R$ <span id="total">0.00</span>
+</div>
+
+<div class="form">
+
+<input id="nome" placeholder="Seu nome">
+
+<input id="endereco" placeholder="Seu endereço">
+
+<select id="pagamento" onchange="verPagamento()">
+<option value="">Forma de pagamento</option>
+<option value="pix">Pix</option>
+<option value="dinheiro">Dinheiro</option>
+</select>
+
+<div id="trocoBox" style="display:none">
+<input id="troco" placeholder="Troco para quanto?">
+</div>
+
+</div>
+
+<div id="pixBox">
+
+<h3>Pagar com Pix</h3>
+
+<img id="qrPix" width="200">
+
+<p id="pixCode"></p>
+
+<button class="copyBtn" onclick="copiarPix()">Copiar Pix</button>
+
+</div>
+
+<button id="btnFinalizar" onclick="enviarPedido()">Finalizar Pedido</button>
+
+<script>
+
+const chavePix="05255555959"
+const cidade="RIO DE JANEIRO"
+const nomeRecebedor="Patricia Ribeiro Martins"
+const telefoneWhatsapp = "5548984182723";
+
+let numeroPedido=Math.floor(Math.random()*9000)+1000
+
+let produtos=[
+{nome:"Bananinha recheada pequena",preco:2.50 ,img:"https://lh3.googleusercontent.com/pw/AP1GczOE-S7Od5pP-OtXW-j8DD-0gMkpgZ85XWqLGcH_8manNp6pxbXQlvUf31QADP2_Q9eQHehnmyMbfDCVjFwKrsEcqxqpHj6I3E736iszOOBkd_tZ3Nu2KoWpsbmrijpIwtoji6ZzAM3xMU56EH3zW0T-=w581-h1032-s-no-gm?authuser=0"},
+{nome:"Pastel De Frango pequeno",preco:2.50 ,img:"https://lh3.googleusercontent.com/pw/AP1GczMdcPdXilQFZ8mgsEIfugkPEncdd-36NcjGjraqekkJg1Y57yrCkZcTUQNkpWYDeiME5ankc-6YSmJ5xC8-0LK0Eb4v6jdCCL1gzgJC3CdSU-nN_FPh5moO_7XCEhCIHz6ZpHX_p3UzT17rtj0pmFSx=w581-h1032-s-no-gm?authuser=0"},
+{nome:"Pastel De Carne Pequeno",preco:2.50 ,img:"https://lh3.googleusercontent.com/pw/AP1GczMdcPdXilQFZ8mgsEIfugkPEncdd-36NcjGjraqekkJg1Y57yrCkZcTUQNkpWYDeiME5ankc-6YSmJ5xC8-0LK0Eb4v6jdCCL1gzgJC3CdSU-nN_FPh5moO_7XCEhCIHz6ZpHX_p3UzT17rtj0pmFSx=w581-h1032-s-no-gm?authuser=0"},
+{nome:"Torta De Frango",preco:10 ,img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800"},{nome:"Bolo De Brigadeiro Pequeno", preco:15 ,img:"https://scontent.fnvt11-1.fna.fbcdn.net/v/t39.30808-6/647557283_122099610627164495_943287657755926165_n.jpg?stp=dst-webp_e15_q70_s1080x490_tt1_u&efg=eyJ1cmxnZW4iOiJ1cmxnZW5fZnJvbV91cmwifQ&_nc_cid=6357&_nc_ad=z-m&_nc_rml=0&_nc_ht=scontent.fnvt11-1.fna&_nc_cat=111&_nc_ohc=CMPISGUX3tsQ7kNvwEyBFdb&_nc_gid=mnrKprZlHLokCnpyVL_seQ&ccb=1-7&_nc_sid=b895b5&oh=00_AfwbJ0emSbxh_yr2J7POkiBmhQODz8VhXKl0JRUeBiEbRQ&oe=69B51CC3"}
+]
+
+let carrinho={}
+
+const produtosDiv=document.getElementById("produtos")
+const lista=document.getElementById("listaCarrinho")
+const totalSpan=document.getElementById("total")
+
+function renderProdutos(){
+
+let html=""
+
+produtos.forEach((p,i)=>{
+
+html+=`
+
+<div class="card">
+
+<div class="banner">
+
+<img src="${p.img}">
+
+<div class="controle">
+
+<button onclick="remover(${i})">-</button>
+
+<span class="qtd">${carrinho[i]||0}</span>
+
+<button onclick="add(${i})">+</button>
+
+</div>
+
+</div>
+
+<div class="info">
+
+<b>${p.nome}</b>
+
+<span>R$ ${p.preco.toFixed(2)}</span>
+
+</div>
+
+</div>
+
+`
+
+})
+
+produtosDiv.innerHTML=html
+
+}
+
+
+
+
+function add(i){
+
+carrinho[i]=(carrinho[i]||0)+1
+
+atualizar()
+
+renderProdutos()
+
+
+let pagamento = document.getElementById("pagamento").value
+
+if(pagamento=="pix"){
+
+let total = parseFloat(totalSpan.textContent)
+
+gerarPix(total)
+
+
+
+}
+}
+
+
+
+
+
+function remover(i){
+
+if(!carrinho[i]) return
+
+carrinho[i]--
+
+if(carrinho[i]<=0) delete carrinho[i]
+
+atualizar()
+
+renderProdutos()
+
+
+
+let pagamento = document.getElementById("pagamento").value
+
+if(pagamento=="pix"){
+
+let total = parseFloat(totalSpan.textContent)
+
+gerarPix(total)
+
+
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+function atualizar(){
+
+let total=0
+let html=""
+
+for(let i in carrinho){
+
+let qtd=carrinho[i]
+let p=produtos[i]
+
+let sub=qtd*p.preco
+
+total+=sub
+
+html+=`<div class="item">${qtd}x ${p.nome}<span>R$ ${sub.toFixed(2)}</span></div>`
+
+}
+
+lista.innerHTML=html||"Carrinho vazio"
+
+totalSpan.textContent=total.toFixed(2)
+
+
+let pagamento=document.getElementById("pagamento").value
+
+if(pagamento=="pix") gerarPix(total)
+
+
+
+
+}
+
+
+
+
+
+
+function buscarProduto(){
+
+let texto = document
+.getElementById("buscar")
+.value
+.toLowerCase()
+
+let cards = document.querySelectorAll(".card")
+
+cards.forEach(card=>{
+
+let nome = card
+.querySelector("b")
+.innerText
+.toLowerCase()
+
+if(nome.includes(texto)){
+card.style.display="block"
+}else{
+card.style.display="none"
+}
+
+})
+
+}
+
+
+
+
+function limparBusca(){
+
+document.getElementById("buscar").value=""
+
+buscarProduto()
+
+}
+
+
+
+
+
+
+
+function verPagamento(){
+
+let p=document.getElementById("pagamento").value
+
+document.getElementById("trocoBox").style.display=p=="dinheiro"?"block":"none"
+
+if(p=="pix"){
+   let total = parseFloat(totalSpan.textContent)
+   gerarPix(total)
+}
+
+}
+
+
+
+
+
+function montarCampo(id, valor){
+  return id + valor.length.toString().padStart(2,'0') + valor;
+}
+
+function crc16(payload){
+  let polinomio = 0x1021;
+  let resultado = 0xFFFF;
+
+  for(let i=0;i<payload.length;i++){
+    resultado ^= payload.charCodeAt(i) << 8;
+    for(let bit=0;bit<8;bit++){
+      if((resultado <<= 1) & 0x10000){
+        resultado ^= polinomio;
+      }
+    }
+  }
+  return (resultado & 0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+}
+
+function gerarPix(valor){
+
+  if(!valor || valor <= 0){
+    alert("Adicione produtos antes de gerar o PIX");
+    return;
+  }
+
+  const gui = montarCampo("00","BR.GOV.BCB.PIX");
+  const chave = montarCampo("01", chavePix);
+  const merchantAccount = montarCampo("26", gui + chave);
+
+  const payloadSemCRC =
+    montarCampo("00","01") +
+    merchantAccount +
+    montarCampo("52","0000") +
+    montarCampo("53","986") +
+    montarCampo("54", valor.toFixed(2)) +
+    montarCampo("58","BR") +
+    montarCampo("59", nomeRecebedor) +
+    montarCampo("60", cidade) +
+    montarCampo("62", montarCampo("05","***")) +
+    "6304";
+
+  const payloadFinal = payloadSemCRC + crc16(payloadSemCRC);
+
+  document.getElementById("pixCode").innerText = payloadFinal;
+
+  document.getElementById("qrPix").src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" +
+    encodeURIComponent(payloadFinal);
+
+  document.getElementById("pixBox").style.display = "block";
+}
+
+
+
+
+
+function copiarPix(){
+
+let code=document.getElementById("pixCode").innerText
+
+navigator.clipboard.writeText(code)
+
+alert("Pix copiado!")
+
+}
+
+
+
+
+
+
+function enviarPedido(){
+
+let nome=document.getElementById("nome").value
+let endereco=document.getElementById("endereco").value
+let pagamento=document.getElementById("pagamento").value
+
+if(!nome || !endereco){
+alert("Preencha nome e endereço")
+return
+}
+
+let total=totalSpan.textContent
+
+let msg=`🧾 Pedido #${numeroPedido}\n━━━━━━━━━━━━\n`
+
+for(let i in carrinho){
+
+let qtd=carrinho[i]
+let p=produtos[i]
+
+msg+=`• ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
+
+}
+
+msg+=`━━━━━━━━━━━━\n💰 Total: R$ ${total}\n`
+
+msg+=`💳 Pagamento: ${pagamento}\n`
+
+if(pagamento=="dinheiro"){
+
+let troco=document.getElementById("troco").value
+
+if(troco) msg+=`💵 Troco para: R$ ${troco}\n`
+
+}
+
+msg+=`\n👤 Cliente: ${nome}\n📍 Endereço: ${endereco}`
+
+const link = "https://api.whatsapp.com/send?phone=" +
+               telefoneWhatsapp +
+               "&text=" +
+               encodeURIComponent(msg);
+
+  window.open(link, "_blank");
+}
+
+
+
+
+
+
+renderProdutos()
+
+</script>
+
+</body>
+</html>
