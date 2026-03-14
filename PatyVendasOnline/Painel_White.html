@@ -196,13 +196,40 @@ padding:12px;
 }
 
 input,select{
-width:100%;
-padding:10px;
-margin:6px 0;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:16px;
+background:#fff;       /* fundo preto */
+  color:#000;            /* texto branco */
+  border:1px solid #444;
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  cursor:pointer;
 }
+
+
+
+
+
+
+/* efeito ao clicar */
+select:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
+}
+
+/* opções dentro */
+select option{
+  background:#fff;
+  color:#000;
+}
+
+
+
+
+
+
 
 /* PIX */
 
