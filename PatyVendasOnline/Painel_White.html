@@ -714,36 +714,38 @@ let endereco=document.getElementById("endereco").value
 let pagamento=document.getElementById("pagamento").value
 
 if(!nome || !endereco){
-alert("Preencha nome e endereÃ§o")
+alert("Preencha Nome e Endereço")
 return
 }
 
 let total=totalSpan.textContent
 
-let msg=`◆ Pedido #${numeroPedido}`
+let msg=`◆ 
+Pedido #${numeroPedido}/n`
 
 for(let i in carrinho){
 
 let qtd=carrinho[i]
 let p=produtos[i]
 
-msg+=`● ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}`
+msg+=`● 
+${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}/n`
 
 }
 
-msg+=`Total: R$ ${total}`
+msg+=`Total: R$ ${total}/n`
 
-msg+=`Pagamento: ${pagamento}`
+msg+=`Pagamento: ${pagamento}/n`
 
 if(pagamento=="dinheiro"){
 
 let troco=document.getElementById("troco").value
 
-if(troco) msg+=`Troco para: R$ ${troco}`
+if(troco) msg+=`Troco para: R$ ${troco}/n`
 
 }
 
-msg+=`Cliente: ${nome}Endereço: ${endereco}`
+msg+=`Cliente: ${nome}Endereço: ${endereco}/n`
 
 const link = "https://api.whatsapp.com/send?phone=" +
                telefoneWhatsapp +
