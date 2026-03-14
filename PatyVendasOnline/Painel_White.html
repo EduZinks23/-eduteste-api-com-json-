@@ -720,30 +720,30 @@ return
 
 let total=totalSpan.textContent
 
-let msg=`ðŸ§¾ Pedido #${numeroPedido}\nâ”â”â”â”â”â”â”â”â”â”â”â”\n`
+let msg=`◆ Pedido #${numeroPedido}`
 
 for(let i in carrinho){
 
 let qtd=carrinho[i]
 let p=produtos[i]
 
-msg+=`â€¢ ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
+msg+=`● ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}`
 
 }
 
-msg+=`â”â”â”â”â”â”â”â”â”â”â”â”\nðŸ’° Total: R$ ${total}\n`
+msg+=`Total: R$ ${total}`
 
-msg+=`ðŸ’³ Pagamento: ${pagamento}\n`
+msg+=`Pagamento: ${pagamento}`
 
 if(pagamento=="dinheiro"){
 
 let troco=document.getElementById("troco").value
 
-if(troco) msg+=`ðŸ’µ Troco para: R$ ${troco}\n`
+if(troco) msg+=`Troco para: R$ ${troco}`
 
 }
 
-msg+=`\nðŸ‘¤ Cliente: ${nome}\nðŸ“ EndereÃ§o: ${endereco}`
+msg+=`Cliente: ${nome}Endereço: ${endereco}`
 
 const link = "https://api.whatsapp.com/send?phone=" +
                telefoneWhatsapp +
