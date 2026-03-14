@@ -720,15 +720,14 @@ return
 
 let total=totalSpan.textContent
 
-let msg=`◆ Pedido #${numeroPedido}\n
-~~~~~~~~~~~~~~~~~~~~~~`
+let msg=`🍽 Pedido #${numeroPedido}\n`
 
 for(let i in carrinho){
 
 let qtd=carrinho[i]
 let p=produtos[i]
 
-msg+=`● ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
+msg+=`${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
 
 }
 
