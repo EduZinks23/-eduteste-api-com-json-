@@ -743,36 +743,39 @@ let endereco=document.getElementById("endereco").value
 let pagamento=document.getElementById("pagamento").value
 
 if(!nome || !endereco){
-alert("Preencha nome e endereÃ§o")
+alert("Preencha Nome e Endereço")
 return
 }
 
 let total=totalSpan.textContent
 
-let msg=`ðŸ§¾ Pedido #${numeroPedido}\nâ”â”â”â”â”â”â”â”â”â”â”â”\n`
+let msg=`◆ Pedido #${numeroPedido}\n
+━━━━━━━━━━`
 
 for(let i in carrinho){
 
 let qtd=carrinho[i]
 let p=produtos[i]
 
-msg+=`â€¢ ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
+msg+=`● ${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
 
 }
 
-msg+=`â”â”â”â”â”â”â”â”â”â”â”â”\nðŸ’° Total: R$ ${total}\n`
+msg+=`━━━━━━━━━━
+Total: R$ ${total}\n`
 
-msg+=`ðŸ’³ Pagamento: ${pagamento}\n`
+msg+=`Pagamento: ${pagamento}\n`
 
 if(pagamento=="dinheiro"){
 
 let troco=document.getElementById("troco").value
 
-if(troco) msg+=`ðŸ’µ Troco para: R$ ${troco}\n`
+if(troco) msg+=`Troco para: R$ ${troco}\n`
 
 }
 
-msg+=`\nðŸ‘¤ Cliente: ${nome}\nðŸ“ EndereÃ§o: ${endereco}`
+msg+=`━━━━━━━━━━
+Cliente: ${nome}\nðŸ“ Endereço: ${endereco}`
 
 const link = "https://api.whatsapp.com/send?phone=" +
                telefoneWhatsapp +
