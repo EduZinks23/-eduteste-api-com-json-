@@ -137,16 +137,38 @@ transform:scale(1.02);
 }
 
 .searchBox input{
+  flex:1;
+  border:none;
+  outline:none;
+  font-size:14px;
+  padding:0px;
 
-flex:1;
-border:none;
-outline:none;
-font-size:14px;
-padding:0px;
-background:#000; /* fundo preto */
-color:#fff; /* texto digitado branco */
-
+  background:#000;
+  color:#fff; /* texto digitado */
 }
+
+/* placeholder padrão */
+.searchBox input::placeholder{
+  color:#fff;
+  opacity:1;
+}
+
+/* Chrome / Safari / Android */
+.searchBox input::-webkit-input-placeholder{
+  color:#fff;
+}
+
+/* Firefox */
+.searchBox input::-moz-placeholder{
+  color:#fff;
+}
+
+/* Edge antigo */
+.searchBox input:-ms-input-placeholder{
+  color:#fff;
+}
+
+
 
 .icon{
 
