@@ -212,6 +212,58 @@ background:#ddd;
 
 
 
+
+
+
+
+/* TODOS INPUTS DO SITE */
+input{
+  background:#000;       /* fundo preto */
+  color:#fff;            /* texto digitado branco */
+  border:1px solid #444; /* borda */
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  transition:0.3s;
+}
+
+/* Efeito quando clica */
+input:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
+}
+
+/* Texto de dica (placeholder) */
+input::placeholder{
+  color:#fff;
+  opacity:0.7;
+}
+
+/* Compatibilidade mobile */
+input::-webkit-input-placeholder{
+  color:#fff;
+}
+
+input::-moz-placeholder{
+  color:#fff;
+}
+
+input:-ms-input-placeholder{
+  color:#fff;
+}
+
+
+
+
+
+
+
+
+
+
 /* TOTAL */
 
 #totalBox{
