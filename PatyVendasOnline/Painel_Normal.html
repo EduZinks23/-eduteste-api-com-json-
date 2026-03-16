@@ -151,6 +151,43 @@ background:var(--primary);
   color:#fff; /* texto digitado */
 }
 
+
+
+/* placeholder padrão */
+.searchBox input::placeholder{
+  color:#fff;
+  opacity:1;
+}
+
+/* Chrome / Safari / Android */
+.searchBox input::-webkit-input-placeholder{
+  color:#fff;
+}
+
+/* Firefox */
+.searchBox input::-moz-placeholder{
+  color:#fff;
+}
+
+/* Edge antigo */
+.searchBox input:-ms-input-placeholder{
+  color:#fff;
+}
+
+
+
+
+
+/* cor da dica (placeholder) */
+.placeholder{
+  color:#fff;
+  opacity:0.7; /* deixa um pouco mais suave */
+}
+
+
+
+
+
 .icon{
 
 width:20px;
@@ -162,7 +199,7 @@ color:#fff;
 .clearBtn{
 
 border:none;
-background:#fff;
+background:#eee;
 width:20px;
 height:20px;
 border-radius:50%;
@@ -205,9 +242,19 @@ width:100%;
 padding:10px;
 margin:6px 0;
 border-radius:8px;
+border:1px solid #ccc;
 font-size:16px;
 background:var(--primary);
-border:1px solid #25D366; 
+color:#fff;
+}
+
+
+
+
+
+select:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
 }
 
 
