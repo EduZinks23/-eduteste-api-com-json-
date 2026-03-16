@@ -434,10 +434,16 @@ function enviarPedido(){
 }
 
 // ================= FETCH JSON =================
-const JSON_URL = "https://api.npoint.io/340a1c2ef3161b18991f";
+
+const JSON_NPOINT = "https://api.npoint.io/340a1c2ef3161b18991f";
 
 
-fetch(JSON_URL)
+const JSON_GITHUB =
+"https://raw.githubusercontent.com/EduZinks23/-eduteste-api-com-json-/refs/heads/main/ADM/OBTER_E_POSTAR/JSON/ListaDeProdutos.json";
+
+
+
+fetch(JSON_GITHUB)
 .then(res => res.text())
 .then(json=>{
   try{
