@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ofertas Shopee</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+:root{
+--shopee:#ee4d2d;
+--bg:#f5f5f5;
+}
+
+body{
+background:var(--bg);
+padding-bottom:70px;
+}
+
+/* HEADER */
+
+header{
+background:var(--shopee);
+color:#fff;
+padding:14px;
+font-size:18px;
+text-align:center;
+font-weight:bold;
+}
+
+/* BUSCA */
+
+.search{
+padding:10px;
+background:#fff;
+}
+
+.search input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+/* BANNER */
+
+.banner{
+overflow-x:auto;
+display:flex;
+gap:10px;
+padding:10px;
+background:#fff;
+}
+
+.banner img{
+width:260px;
+border-radius:8px;
+}
+
+/* CATEGORIAS */
+
+.categorias{
+display:flex;
+overflow-x:auto;
+gap:10px;
+padding:10px;
+background:#fff;
+}
+
+.cat{
+
+background:#fff;
+border:1px solid #eee;
+padding:8px 12px;
+border-radius:20px;
+font-size:13px;
+white-space:nowrap;
+
+}
+
+/* PRODUTOS */
+
+#produtos{
+
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+padding:10px;
+
+}
+
+.card{
+
+background:#fff;
+border-radius:8px;
+overflow:hidden;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+position:relative;
+
+}
+
+.desconto{
+
+position:absolute;
+top:5px;
+left:5px;
+background:var(--shopee);
+color:#fff;
+font-size:11px;
+padding:2px 6px;
+border-radius:4px;
+
+}
+
+.card img{
+
+width:100%;
+aspect-ratio:1/1;
+object-fit:cover;
+
+}
+
+.info{
+
+padding:8px;
+
+}
+
+.nome{
+
+font-size:13px;
+height:34px;
+overflow:hidden;
+
+}
+
+.preco{
+
+color:var(--shopee);
+font-weight:bold;
+font-size:16px;
+margin-top:4px;
+
+}
+
+.avaliacao{
+
+font-size:12px;
+color:#ffa41c;
+
+}
+
+.frete{
+
+font-size:11px;
+color:green;
+
+}
+
+.btn{
+
+margin-top:6px;
+width:100%;
+background:var(--shopee);
+color:#fff;
+border:none;
+padding:7px;
+border-radius:5px;
+
+}
+
+/* MENU INFERIOR */
+
+.menu{
+
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+display:flex;
+justify-content:space-around;
+border-top:1px solid #ddd;
+padding:8px 0;
+
+}
+
+.menu div{
+
+font-size:12px;
+text-align:center;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header> Super Ofertas</header>
+
+<div class="search">
+<input type="text" placeholder="Buscar produto..." id="buscar" onkeyup="buscarProduto()">
+</div>
+
+<div class="banner">
+
+<a href="index.html"><img src="https://i.imgur.com/V9K4KqK.jpg"><a/>
+<a href="index.html"><img src="https://i.imgur.com/9cOaK7J.jpg"><a/>
+<a href="index.html"><img src="https://i.imgur.com/5JYpZbR.jpg"><a/>
+
+</div>
+
+<div class="categorias">
+
+<div class="cat">Eletrônicos</div>
+<div class="cat">Casa</div>
+<div class="cat">Promoções</div>
+<div class="cat">Moda</div>
+<div class="cat">Gamer</div>
+
+</div>
+
+<div id="produtos"></div>
+
+<div class="menu">
+
+<div><br>Início</div>
+<div><br>Ofertas</div>
+<div><br>Mais vendidos</div>
+<div><br>Conta</div>
+
+</div>
+
+<script>
+
+let produtos=[
+
+{
+nome:"Smartwatch D20 Bluetooth",
+preco:"R$39,90",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"SEU_LINK_AFILIADO",
+desconto:"-40%",
+avaliacao:"",
+frete:"Frete grátis"
+},
+
+{
+nome:"Fone Bluetooth Gamer",
+preco:"R$49,90",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"SEU_LINK_AFILIADO",
+desconto:"-30%",
+avaliacao:"",
+frete:"Frete grátis"
+},
+
+{
+nome:"Luz LED RGB",
+preco:"R$19,90",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"SEU_LINK_AFILIADO",
+desconto:"-50%",
+avaliacao:"",
+frete:"Frete grátis"
+}
+
+]
+
+let div=document.getElementById("produtos")
+
+function render(lista){
+
+let html=""
+
+lista.forEach(p=>{
+
+html+=`
+
+<div class="card">
+
+<div class="desconto">${p.desconto}</div>
+
+<img src="${p.img}">
+
+<div class="info">
+
+<div class="nome">${p.nome}</div>
+
+<div class="preco">${p.preco}</div>
+
+<div class="avaliacao">${p.avaliacao}</div>
+
+<div class="frete">${p.frete}</div>
+
+<button class="btn" onclick="abrir('${p.link}')">Ver oferta</button>
+
+</div>
+
+</div>
+
+`
+
+})
+
+div.innerHTML=html
+
+}
+
+function abrir(link){
+
+window.open(link,"_blank")
+
+}
+
+function buscarProduto(){
+
+let t=document
+.getElementById("buscar")
+.value
+.toLowerCase()
+
+let f=produtos.filter(p=>
+p.nome.toLowerCase().includes(t)
+)
+
+render(f)
+
+}
+
+render(produtos)
+
+</script>
+
+</body>
+</html>

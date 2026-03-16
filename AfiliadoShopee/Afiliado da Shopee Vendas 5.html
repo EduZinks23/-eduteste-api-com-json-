@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Achadinhos Shopee</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#f5f5f5;
+}
+
+/* HEADER */
+
+header{
+background:#ee4d2d;
+color:#fff;
+padding:15px;
+font-size:20px;
+text-align:center;
+font-weight:bold;
+}
+
+/* BUSCA */
+
+.search{
+padding:10px;
+background:#fff;
+}
+
+.search input{
+
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:15px;
+
+}
+
+/* CATEGORIAS */
+
+.categorias{
+
+display:flex;
+overflow:auto;
+gap:10px;
+padding:10px;
+background:#fff;
+
+}
+
+.cat{
+
+background:#eee;
+padding:7px 12px;
+border-radius:20px;
+font-size:13px;
+cursor:pointer;
+
+}
+
+/* PRODUTOS */
+
+#produtos{
+
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+padding:10px;
+
+}
+
+.card{
+
+background:#fff;
+border-radius:8px;
+overflow:hidden;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+
+}
+
+.card img{
+
+width:100%;
+aspect-ratio:1/1;
+object-fit:cover;
+cursor:pointer;
+
+}
+
+.info{
+padding:8px;
+}
+
+.nome{
+font-size:13px;
+height:34px;
+overflow:hidden;
+}
+
+.preco{
+color:#ee4d2d;
+font-weight:bold;
+font-size:16px;
+margin-top:4px;
+}
+
+/* MENU */
+
+.menu{
+
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+border-top:1px solid #ddd;
+display:flex;
+justify-content:space-around;
+padding:8px;
+
+}
+
+.menu div{
+font-size:12px;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header> Achadinhos Shopee</header>
+
+<div class="search">
+<input type="text" id="buscar" placeholder="Buscar produtos..." onkeyup="buscar()">
+</div>
+
+<div class="categorias">
+
+<div class="cat" onclick="filtrar('todos')">Todos</div>
+<div class="cat" onclick="filtrar('eletronicos')">Eletrônicos</div>
+<div class="cat" onclick="filtrar('gamer')">Gamer</div>
+<div class="cat" onclick="filtrar('casa')">Casa</div>
+
+</div>
+
+<div id="produtos"></div>
+
+
+
+<script>
+
+/* PRODUTOS */
+
+let produtos=[
+
+{
+nome:"Smartwatch D20 Bluetooth",
+preco:"R$39,90",
+categoria:"eletronicos",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+},
+
+{
+nome:"Headset Gamer RGB",
+preco:"R$59,90",
+categoria:"gamer",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+},
+
+{
+nome:"Luminária LED Touch",
+preco:"R$24,90",
+categoria:"casa",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+},
+{
+nome:"Luminária LED Touch",
+preco:"R$24,90",
+categoria:"casa",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+},
+{
+nome:"Luminária LED Touch",
+preco:"R$24,90",
+categoria:"casa",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+},
+{
+nome:"Luminária LED Touch",
+preco:"R$24,90",
+categoria:"casa",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+},
+{
+nome:"Luminária LED Touch",
+preco:"R$24,90",
+categoria:"casa",
+img:"https://down-br.img.susercontent.com/file/br-11134207-7r98o-lm9n4s1c9h3o3a",
+link:"https://s.shopee.com.br/xxxx"
+}
+
+]
+
+let div=document.getElementById("produtos")
+
+function render(lista){
+
+let html=""
+
+lista.forEach(p=>{
+
+html+=`
+
+<div class="card">
+
+<img src="${p.img}" onclick="abrir('${p.link}')">
+
+<div class="info">
+
+<div class="nome">${p.nome}</div>
+
+<div class="preco">${p.preco}</div>
+
+</div>
+
+</div>
+
+`
+
+})
+
+div.innerHTML=html
+
+}
+
+function abrir(link){
+
+window.open(link,"_blank")
+
+}
+
+function buscar(){
+
+let texto=document
+.getElementById("buscar")
+.value
+.toLowerCase()
+
+let filtrado=produtos.filter(p=>
+p.nome.toLowerCase().includes(texto)
+)
+
+render(filtrado)
+
+}
+
+function filtrar(cat){
+
+if(cat=="todos"){
+render(produtos)
+return
+}
+
+let filtrado=produtos.filter(p=>p.categoria==cat)
+
+render(filtrado)
+
+}
+
+render(produtos)
+
+</script>
+
+</body>
+</html>
