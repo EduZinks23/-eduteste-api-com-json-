@@ -209,6 +209,57 @@ border:1px solid #ccc;
 font-size:16px;
 }
 
+
+
+
+/* TODOS INPUTS DO SITE */
+.form input{
+  background:var(--primary);      /* fundo preto */
+  color:#fff;            /* texto digitado branco */
+  border:1px solid #444; /* borda */
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  transition:0.3s;
+}
+
+/* Efeito quando clica */
+.form input:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
+}
+
+/* Texto de dica (placeholder) */
+.form input::placeholder{
+  color:#fff;
+  opacity:0.7;
+}
+
+/* Compatibilidade mobile */
+.form input::-webkit-input-placeholder{
+  color:#fff;
+}
+
+.form input::-moz-placeholder{
+  color:#fff;
+}
+
+.form input:-ms-input-placeholder{
+  color:#fff;
+}
+
+
+
+
+
+
+
+
+
+
 /* PIX */
 
 #pixBox{
