@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Painel Produtos</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f1f5f9;
+padding:20px;
+}
+
+.box{
+max-width:900px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:6px;
+background:#ee4d2d;
+color:#fff;
+cursor:pointer;
+}
+
+#produtos{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:20px;
+}
+
+.card{
+background:#fff;
+border-radius:8px;
+box-shadow:0 2px 6px rgba(0,0,0,.1);
+overflow:hidden;
+}
+
+.card img{
+width:100%;
+aspect-ratio:1/1;
+object-fit:cover;
+}
+
+.info{
+padding:10px;
+font-size:14px;
+}
+
+.acoes{
+display:flex;
+gap:5px;
+padding:8px;
+}
+
+.acoes button{
+flex:1;
+font-size:12px;
+}
+
+textarea{
+width:100%;
+height:150px;
+margin-top:10px;
+padding:10px;
+}
+
+#editor{
+background:#020617;
+color:#fff;
+padding:15px;
+border-radius:8px;
+min-height:200px;
+white-space:pre;
+overflow:auto;
+margin-top:10px;
+}
+
+mark{
+background:#ffe066;
+color:#000;
+}
+
+.key{color:#38bdf8}
+.string{color:#22c55e}
+.number{color:#f59e0b}
+
+.searchBox{
+display:flex;
+gap:8px;
+margin-top:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>Adicionar Produto</h2>
+
+<input id="nome" placeholder="Nome do produto">
+<input id="preco" placeholder="Preço">
+<input id="img" placeholder="URL da imagem">
+<input id="categoria" placeholder="Categoria">
+<input id="link" placeholder="Link afiliado">
+
+<div style="display:flex; gap:10px; margin-top:10px;">
+  <button onclick="adicionar()">Adicionar Produto</button>
+  <button onclick="limparLista()" style="background:#888">Limpar Lista</button>
+</div>
+
+
+<div class="searchBox">
+
+<input id="busca" placeholder="Buscar no JSON...">
+<button onclick="filtrar()">Filtrar</button>
+<button onclick="limpar()">Limpar</button>
+
+</div>
+
+<div id="produtos"></div>
+
+<h3>JSON Gerado</h3>
+
+<textarea id="saida"></textarea>
+
+<button onclick="copiar()">Copiar JSON</button>
+<button onclick="baixar()">Baixar JSON</button>
+
+<h3>Editor JSON</h3>
+
+<div id="editor" contenteditable="true"></div>
+
+<button onclick="salvarJSON()">Salvar edição</button>
+<button onclick="destacarBusca()">Destacar busca</button>
+
+</div>
+
+<script>
+
+let produtos=[]
+let editIndex=null
+
+function adicionar(){
+
+let produto={
+nome:document.getElementById("nome").value,
+preco:document.getElementById("preco").value,
+img:document.getElementById("img").value,
+categoria:document.getElementById("categoria").value,
+link:document.getElementById("link").value
+}
+
+if(editIndex!==null){
+
+produtos[editIndex]=produto
+editIndex=null
+
+}else{
+
+produtos.push(produto)
+
+}
+
+render()
+gerarJSON()
+
+}
+
+
+function limparLista(){
+
+if(confirm("Deseja realmente limpar toda a lista de produtos?")){
+
+  produtos = []
+
+  render()      // atualiza a visualização dos cards
+  gerarJSON()   // gera JSON vazio ou com modelo padrão
+
+}
+
+}
+
+
+
+
+
+
+
+
+function render(){
+
+let html=""
+
+produtos.forEach((p,i)=>{
+
+html+=`
+
+<div class="card">
+
+<img src="${p.img}">
+
+<div class="info">
+
+${p.nome}<br>
+<b>${p.preco}</b>
+
+</div>
+
+<div class="acoes">
+
+<button onclick="editar(${i})">Editar</button>
+<button onclick="remover(${i})">Remover</button>
+
+</div>
+
+</div>
+
+`
+
+})
+
+document.getElementById("produtos").innerHTML = html
+
+}
+
+function remover(i){
+
+produtos.splice(i,1)
+
+render()
+gerarJSON()
+
+}
+
+function editar(i){
+
+let p=produtos[i]
+
+nome.value=p.nome
+preco.value=p.preco
+img.value=p.img
+categoria.value=p.categoria
+link.value=p.link
+
+editIndex=i
+
+}
+
+
+function gerarJSON(){
+  let json = produtos.length === 0 ? `[]` : JSON.stringify(produtos,null,2)
+  
+  saida.value = json
+  mostrarEditor()
+}
+
+
+
+
+
+
+function mostrarEditor(){
+
+let json=saida.value
+
+editor.innerHTML=syntaxHighlight(json)
+
+}
+
+function syntaxHighlight(json){
+
+return json
+.replace(/"(.*?)":/g,'<span class="key">"$1"</span>:')
+.replace(/:"(.*?)"/g,':<span class="string">"$1"</span>')
+.replace(/:(\\d+)/g,':<span class="number">$1</span>')
+
+}
+
+function salvarJSON(){
+
+let texto=editor.innerText
+
+saida.value=texto
+
+alert("JSON atualizado!")
+
+}
+
+function copiar(){
+
+saida.select()
+
+document.execCommand("copy")
+
+alert("Copiado!")
+
+}
+
+function baixar(){
+
+let blob=new Blob([saida.value],{type:"application/json"})
+
+let a=document.createElement("a")
+
+a.href=URL.createObjectURL(blob)
+
+a.download="produtos.json"
+
+a.click()
+
+}
+
+function filtrar(){
+
+let termo=busca.value.toLowerCase()
+
+let filtrados=produtos.filter(p=>JSON.stringify(p).toLowerCase().includes(termo))
+
+renderFiltro(filtrados)
+
+}
+
+function renderFiltro(lista){
+
+let html=""
+
+lista.forEach(p=>{
+
+html+=`
+
+<div class="card">
+
+<img src="${p.img}">
+
+<div class="info">
+
+${p.nome}<br>
+<b>${p.preco}</b>
+
+</div>
+
+</div>
+
+`
+
+})
+
+document.getElementById("produtos").innerHTML = html
+
+}
+
+function limpar(){
+
+busca.value=""
+
+render()
+
+}
+
+
+
+
+function destacarBusca(){
+
+let termo = document.getElementById("busca").value.trim()
+let editor = document.getElementById("editor")
+
+let texto = editor.innerText.trim()
+
+// se estiver vazio cria modelo JSON
+if(texto === ""){
+
+texto = `[
+  {
+    "nome": "",
+    "preco": "",
+    "img": "",
+    "categoria": "",
+    "link": ""
+  }
+]`
+
+editor.innerText = texto
+
+}
+
+// validar JSON
+try{
+
+JSON.parse(texto)
+
+}catch{
+
+alert("JSON inválido")
+
+return
+
+}
+
+// se não tiver busca apenas mostrar colorido
+if(!termo){
+
+editor.innerHTML = syntaxHighlight(texto)
+
+return
+
+}
+
+// escapar caracteres especiais
+let termoSeguro = termo.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")
+
+let regex = new RegExp(`(${termoSeguro})`,"gi")
+
+let html = syntaxHighlight(texto).replace(regex,"<mark>$1</mark>")
+
+editor.innerHTML = html
+
+
+
+
+
+
+
+
+
+}
+
+</script>
+
+</body>
+</html>
