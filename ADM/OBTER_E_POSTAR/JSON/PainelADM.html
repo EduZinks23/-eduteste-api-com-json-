@@ -438,12 +438,17 @@ function enviarPedido(){
 const JSON_NPOINT = "https://api.npoint.io/340a1c2ef3161b18991f";
 
 
-const JSON_GITHUB =
+const JSON_GITHUB1 =
 "https://raw.githubusercontent.com/EduZinks23/-eduteste-api-com-json-/refs/heads/main/ADM/OBTER_E_POSTAR/JSON/ListaDeProdutos.json";
 
 
+const JSON_GIT_HUB2 =
+"https://raw.githubusercontent.com/EduZinks23/-eduteste-api-com-json-/refs/heads/main/ADM/OBTER_E_POSTAR/JSON/api%20request%20banco%20de%20dados%20json.json";
 
-fetch(JSON_GITHUB)
+
+
+
+fetch(JSON_GIT_HUB2)
 .then(res => res.text())
 .then(json=>{
   try{
