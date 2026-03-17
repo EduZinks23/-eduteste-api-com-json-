@@ -150,7 +150,7 @@ function enviarPedido(){ let nome=document.getElementById("nome").value; let end
 const LINK_JSON = "https://eduzinks23.github.io/-eduteste-api-com-json-/ADM/OBTER_E_POSTAR/JSON/FormatoJson.json"; // Coloque seu link
 const JSON_URL = `https://corsproxy.io/?${LINK_JSON}`; // Proxy CORS automático
 
-fetch("https://eduzinks23.github.io/-eduteste-api-com-json-/ADM/OBTER_E_POSTAR/JSON/FormatoJson.json")
+fetch(JSON_URL)
   .then(res=>res.json())
   .then(data=>{
     produtos = data;
