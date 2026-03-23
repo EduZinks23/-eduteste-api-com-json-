@@ -11,8 +11,8 @@
 
 :root{
 --primary:#000000;
---bg:#000000;
---card:#fff;
+--bg:#ffffff;
+--card:#000000;
 }
 
 body{
@@ -23,8 +23,8 @@ background:var(--bg);
 /* HEADER */
 
 header{
-background:var(--primary);
-color:#fff;
+background:#000;
+color:#000;
 padding:16px;
 text-align:center;
 font-size:22px;
@@ -38,7 +38,8 @@ padding:12px;
 }
 
 .card{
-background:#fff;
+background: linear-gradient(135deg, #ff3b3b, #b30000);
+color:#fff;
 border-radius:14px;
 overflow:hidden;
 margin-bottom:14px;
@@ -49,6 +50,17 @@ border:1px solid #fff;
 .banner{
 position:relative;
 aspect-ratio:16/9;
+background: linear-gradient(
+  135deg,
+  #000,
+  #000,
+  #000,
+  #000,
+  #000
+);
+color:#fff;
+border:5px solid #fff;
+border-radius:10px;
 }
 
 .banner img{
@@ -87,6 +99,7 @@ cursor:pointer;
 font-weight:bold;
 min-width:20px;
 text-align:center;
+color:#000;
 }
 
 /* INFO */
@@ -121,68 +134,47 @@ margin:6px 0;
 
 display:flex;
 align-items:center;
-background:#000;
+background:#fff;
 padding:10px 12px;
 border-radius:10px;
 margin:10px;
-box-shadow:0.0px 0px rgba(0,0,0,.00);
+box-shadow:0.0px 0px rgba(0,0,0,.08);
 transition:.3s;
 
 }
 
 .searchBox:focus-within{
+
 border:1px solid #25D366;
 box-shadow:0 0 5px rgba(37,211,102,0.6);
 transform:scale(1.02);
-background:#000;
+background:#fff;
+
 }
 
 .searchBox input{
-  flex:1;
-  border:none;
-  outline:none;
-  font-size:14px;
-  padding:0px;
 
-  background:#000;
-  color:#fff; /* texto digitado */
+flex:1;
+border:none;
+outline:none;
+font-size:14px;
+padding:0px;
+
 }
-
-/* placeholder padrão */
-.searchBox input::placeholder{
-  color:#fff;
-  opacity:1;
-}
-
-/* Chrome / Safari / Android */
-.searchBox input::-webkit-input-placeholder{
-  color:#fff;
-}
-
-/* Firefox */
-.searchBox input::-moz-placeholder{
-  color:#fff;
-}
-
-/* Edge antigo */
-.searchBox input:-ms-input-placeholder{
-  color:#fff;
-}
-
-
 
 .icon{
 
 width:20px;
 margin-right:8px;
-color:#fff;
-
+color:#000;
+background:#fff;
 }
 
 .clearBtn{
 
 border:none;
-background:#eee;
+background:#000;
+color:#fff;
 width:20px;
 height:20px;
 border-radius:50%;
@@ -196,72 +188,9 @@ justify-content:center;
 
 .clearBtn:hover{
 
-background:#ddd;
-
+background:#fff;
+color:#fff
 }
-
-
-
-
-/* cor da dica (placeholder) */
-.placeholder{
-  color:#fff;
-  opacity:0.7; /* deixa um pouco mais suave */
-}
-
-
-
-
-
-
-
-
-
-/* TODOS INPUTS DO SITE */
-.form input{
-  background:#000;       /* fundo preto */
-  color:#fff;            /* texto digitado branco */
-  border:1px solid #444; /* borda */
-  border-radius:8px;
-  padding:10px;
-  font-size:14px;
-  outline:none;
-  width:100%;
-  box-sizing:border-box;
-  transition:0.3s;
-}
-
-/* Efeito quando clica */
-.form input:focus{
-  border:1px solid #25D366;
-  box-shadow:0 0 5px rgba(37,211,102,0.6);
-}
-
-/* Texto de dica (placeholder) */
-.form input::placeholder{
-  color:#fff;
-  opacity:0.7;
-}
-
-/* Compatibilidade mobile */
-.form input::-webkit-input-placeholder{
-  color:#fff;
-}
-
-.form input::-moz-placeholder{
-  color:#fff;
-}
-
-.form input:-ms-input-placeholder{
-  color:#fff;
-}
-
-
-
-
-
-
-
 
 
 
@@ -283,27 +212,84 @@ font-weight:bold;
 padding:12px;
 }
 
-
-
 input,select{
-width:100%;
-padding:10px;
-margin:6px 0;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:16px;
-background:#000;
-color:#fff;
+background:#fff;       /* fundo preto */
+  color:#000;            /* texto branco */
+  border:1px solid #444;
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  cursor:pointer;
 }
 
 
 
 
 
+/* TODOS INPUTS DO SITE */
+.form input{
+  background:#fff;       /* fundo preto */
+  color:#000;            /* texto digitado branco */
+  border:1px solid #444; /* borda */
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  transition:0.3s;
+}
+
+/* Efeito quando clica */
+.form input:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
+}
+
+/* Texto de dica (placeholder) */
+.form input::placeholder{
+  color:#000;
+  opacity:0.7;
+}
+
+/* Compatibilidade mobile */
+.form input::-webkit-input-placeholder{
+  color:#000;
+}
+
+.form input::-moz-placeholder{
+  color:#000;
+}
+
+.form input:-ms-input-placeholder{
+  color:#000;
+}
+
+
+
+
+
+
+
+
+
+/* efeito ao clicar */
 select:focus{
   border:1px solid #25D366;
   box-shadow:0 0 5px rgba(37,211,102,0.6);
 }
+
+/* opções dentro */
+select option{
+  background:#fff;
+  color:#000;
+}
+
+
+
 
 
 
@@ -746,7 +732,7 @@ return
 
 let total=totalSpan.textContent
 
-let msg=`🍱 Pedido #${numeroPedido}\n`
+let msg=`🍽 Pedido #${numeroPedido}\n`
 
 for(let i in carrinho){
 
