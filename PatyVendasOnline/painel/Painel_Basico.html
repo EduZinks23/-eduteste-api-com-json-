@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Simples De Vendas</title>
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+--primary:#000000;
+--bg:#000000;
+--card:#fff;
+}
+
+body{
+font-family:Arial;
+background:var(--bg);
+}
+
+/* HEADER */
+
+header{
+background:var(--primary);
+color:#fff;
+padding:16px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+/* PRODUTOS */
+
+#produtos{
+padding:12px;
+}
+
+.card{
+background:#fff;
+border-radius:14px;
+overflow:hidden;
+margin-bottom:14px;
+box-shadow:0 4px 14px rgba(0,0,0,.08);
+border:1px solid #fff;
+}
+
+.banner{
+position:relative;
+aspect-ratio:16/9;
+}
+
+.banner img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* CONTROLE */
+
+.controle{
+position:absolute;
+bottom:10px;
+right:10px;
+background:#fff;
+border-radius:30px;
+display:flex;
+align-items:center;
+gap:8px;
+padding:5px 10px;
+box-shadow:0 4px 10px rgba(0,0,0,.3);
+}
+
+.controle button{
+border:none;
+background:var(--primary);
+color:#fff;
+width:28px;
+height:28px;
+border-radius:50%;
+font-size:18px;
+cursor:pointer;
+}
+
+.qtd{
+font-weight:bold;
+min-width:20px;
+text-align:center;
+}
+
+/* INFO */
+
+.info{
+padding:12px;
+display:flex;
+justify-content:space-between;
+}
+
+/* CARRINHO */
+
+#carrinho{
+background:#fff;
+margin:12px;
+padding:12px;
+border-radius:12px;
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+margin:6px 0;
+}
+
+
+
+
+/*BUSCAR ITENS */
+
+.searchBox{
+
+display:flex;
+align-items:center;
+background:#000;
+padding:10px 12px;
+border-radius:10px;
+margin:10px;
+box-shadow:0.0px 0px rgba(0,0,0,.00);
+transition:.3s;
+
+}
+
+.searchBox:focus-within{
+border:1px solid #25D366;
+box-shadow:0 0 5px rgba(37,211,102,0.6);
+transform:scale(1.02);
+background:#000;
+}
+
+.searchBox input{
+  flex:1;
+  border:none;
+  outline:none;
+  font-size:14px;
+  padding:0px;
+
+  background:#000;
+  color:#fff; /* texto digitado */
+}
+
+/* placeholder padrão */
+.searchBox input::placeholder{
+  color:#fff;
+  opacity:1;
+}
+
+/* Chrome / Safari / Android */
+.searchBox input::-webkit-input-placeholder{
+  color:#fff;
+}
+
+/* Firefox */
+.searchBox input::-moz-placeholder{
+  color:#fff;
+}
+
+/* Edge antigo */
+.searchBox input:-ms-input-placeholder{
+  color:#fff;
+}
+
+
+
+.icon{
+
+width:20px;
+margin-right:8px;
+color:#fff;
+
+}
+
+.clearBtn{
+
+border:none;
+background:#eee;
+width:20px;
+height:20px;
+border-radius:50%;
+cursor:pointer;
+font-size:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+.clearBtn:hover{
+
+background:#ddd;
+
+}
+
+
+
+
+/* cor da dica (placeholder) */
+.placeholder{
+  color:#fff;
+  opacity:0.7; /* deixa um pouco mais suave */
+}
+
+
+
+
+
+
+
+
+
+/* TODOS INPUTS DO SITE */
+.form input{
+  background:#000;       /* fundo preto */
+  color:#fff;            /* texto digitado branco */
+  border:1px solid #444; /* borda */
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+  outline:none;
+  width:100%;
+  box-sizing:border-box;
+  transition:0.3s;
+}
+
+/* Efeito quando clica */
+.form input:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
+}
+
+/* Texto de dica (placeholder) */
+.form input::placeholder{
+  color:#fff;
+  opacity:0.7;
+}
+
+/* Compatibilidade mobile */
+.form input::-webkit-input-placeholder{
+  color:#fff;
+}
+
+.form input::-moz-placeholder{
+  color:#fff;
+}
+
+.form input:-ms-input-placeholder{
+  color:#fff;
+}
+
+
+
+
+
+
+
+
+
+
+/* TOTAL */
+
+#totalBox{
+margin:12px;
+background:#fff3f4;
+border:2px dashed var(--primary);
+padding:12px;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+
+/* FORM */
+
+.form{
+padding:12px;
+}
+
+
+
+input,select{
+width:100%;
+padding:10px;
+margin:6px 0;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+background:#000;
+color:#fff;
+}
+
+
+
+
+
+select:focus{
+  border:1px solid #25D366;
+  box-shadow:0 0 5px rgba(37,211,102,0.6);
+}
+
+
+
+
+/* PIX */
+
+#pixBox{
+display:none;
+background:#fff;
+padding:12px;
+margin:12px;
+border-radius:12px;
+text-align:center;
+}
+
+#pixCode{
+word-break:break-all;
+font-size:12px;
+}
+
+/* BOTÃ•ES */
+
+button{
+cursor:pointer;
+}
+
+.copyBtn{
+margin-top:6px;
+padding:8px 12px;
+background:#333;
+color:#fff;
+border:none;
+border-radius:6px;
+}
+
+#btnFinalizar{
+position:fixed;
+  bottom:15px;
+  right:15px;
+  background:#25D366;
+  color:#fff;
+  border:none;
+  padding:14px 18px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ANIMAÃ‡ÃƒO */
+
+@keyframes pop{
+0%{transform:scale(1)}
+50%{transform:scale(1.2)}
+100%{transform:scale(1)}
+}
+
+.pop{
+animation:pop .3s;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>Paty Vendas Online</header>
+
+<div class="searchBox">
+
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"
+stroke="currentColor"
+stroke-width="2"
+fill="none"
+stroke-linecap="round"/>
+</svg>
+
+<input 
+type="text" 
+id="buscar" 
+placeholder="Buscar produtos..."
+onkeyup="buscarProduto()"
+>
+
+<button class="clearBtn" onclick="limparBusca()">✕</button>
+
+</div>
+
+
+
+<div id="produtos"></div>
+
+<div id="carrinho">
+<h3>🧾 Seu pedido</h3>
+<div id="listaCarrinho">Carrinho vazio</div>
+</div>
+
+<div id="totalBox">
+Total: R$ <span id="total">0.00</span>
+</div>
+
+<div class="form">
+
+<input id="nome" placeholder="Seu nome">
+
+<input id="endereco" placeholder="Seu endereço">
+
+<select id="pagamento" onchange="verPagamento()">
+<option value="">Forma de pagamento</option>
+<option value="pix">Pix</option>
+<option value="dinheiro">Dinheiro</option>
+</select>
+
+<div id="trocoBox" style="display:none">
+<input id="troco" placeholder="Troco para quanto?">
+</div>
+
+</div>
+
+<div id="pixBox">
+
+<h3>Pagar com Pix</h3>
+
+<img id="qrPix" width="200">
+
+<p id="pixCode"></p>
+
+<button class="copyBtn" onclick="copiarPix()">Copiar Pix</button>
+
+</div>
+
+<button id="btnFinalizar" onclick="enviarPedido()">Finalizar Pedido</button>
+
+<script>
+
+const chavePix="05255555959"
+const cidade="RIO DE JANEIRO"
+const nomeRecebedor="Patricia Ribeiro Martins"
+const telefoneWhatsapp = "5548984182723";
+
+let numeroPedido=Math.floor(Math.random()*9000)+1000
+
+let produtos=[{"nome":"Bananinha Recheada Pequena C/A","preco":2.50,"img":"https://lh3.googleusercontent.com/pw/AP1GczOZ5j2HPQnTgDt5PJv736vxp0loSalr7el4hukdUBHaObuDxqFFPtlnBCFovS9uzB50qvN_dQPiTisVigQbzqINul74a1tP3Rp0gIWNdg5sXfkqOge88pAF6DEL856fcwBtEUtpK4hnf2W3AKRwEST_sg=w720-h324-s-no-gm?authuser=0"},{"nome":"Bananinha Recheada Pequena S/A","preco":2.50,"img":"https://lh3.googleusercontent.com/pw/AP1GczO2Sm3KTRwAfSryz3tYp2aZsAdh07E_rfkmXAWdaKJwzudSiCOwJMVh304U6zVAjWQfEoWKSqLOJ3T9kdx3VgIIh8zglqHA-0UmnzXktBGQoAY-xN0gapOTo1kaVLqe2oaSEkdEKnkf8CeW18HJmB5IxA=w666-h375-s-no-gm?authuser=0"},{"nome":"Pastel De Carne Pequeno","preco":2.50,"img":"https://lh3.googleusercontent.com/pw/AP1GczPfg_p7R8qzq0W31FDYAKiaKcH7gflrKlEzG5ZMYPgT0dAGebGpL8uQbPA-pWAk4HqfblZl9hIGEwFRA4zGru36LVhKH0sdFa_-VUg-z6M-wj6FOISOZmBWw52C6mNAD2bhjtM1KkB-UuPBH0VvtUnmRA=w335-h744-s-no-gm?authuser=0"},{"nome":"Pastel De Presunto E Queijo","preco":2.50,"img":"https://lh3.googleusercontent.com/pw/AP1GczPfg_p7R8qzq0W31FDYAKiaKcH7gflrKlEzG5ZMYPgT0dAGebGpL8uQbPA-pWAk4HqfblZl9hIGEwFRA4zGru36LVhKH0sdFa_-VUg-z6M-wj6FOISOZmBWw52C6mNAD2bhjtM1KkB-UuPBH0VvtUnmRA=w335-h744-s-no-gm?authuser=0"},{"nome":"Torta Grande De Frango 500ML","preco":15,"img":"https://lh3.googleusercontent.com/pw/AP1GczPFszCAQX_nvBiWO-V2TCBk0_9b7ihbWJqHIJzOBo377QV0E02kBzE6XoDObluhyCVYHn6sX1lfYVsFq4TNd8dl1SYS1xvflAiE9N36Lw6_7_XwG_ykoEGmasvLLYPvXxpGns9VQoN9jwqnLetQHahbUw=w720-h324-s-no-gm?authuser=0"},{"nome":"Torta Grande De Carne 500ML","preco":15,"img":"https://lh3.googleusercontent.com/pw/AP1GczNsqAnvSjOCyGAx2xgrW9PKKXOlHxGibOC0G7-WqNGGMcEi8JrMGU7tVBZZsDDwdnxaTSMzj8I42r9YgpT2YyDyrLGnXhgsPNU4Jonc06uetAOYf1d6HVUiJhbELfKbVRw-bk5BUkP9WtzYrS3maUhmTQ=w720-h324-s-no-gm?authuser=0"},{"nome":"Mini Torta De Frango 220ML","preco":5,"img":"https://lh3.googleusercontent.com/pw/AP1GczP2eK93DxHAWHKb031QSpFC0hB_cauO4gGdUwOEHCTrJzpRjTIqqTjZsXdBYjCkfpNMjsPCY61Zajb2Ypuw0XT1Uy9FMSxWal_W5kI5OwANHfBAmKnFqRzh1BmdNslfIU4_yHyt9DTO4JSy4Wvm-GwofA=w720-h324-s-no-gm?authuser=0"},{"nome":"Mini Torta De Carne 220ML","preco":5,"img":"https://lh3.googleusercontent.com/pw/AP1GczMXhwVfGql1OXThA--Am_fvfOmcC9DSTcEQV7owGp8fBHlTmblvEbQjAN5a832O385P3oHGoxjZp1YpKV4-A3XHAe9QvlMDTqfpWIfrN45OKjg9hcQx808_QqSKQie4I42quQ2stqCq972yhAvrR_mXbQ=w720-h324-s-no-gm?authuser=0"}]
+
+
+let carrinho={}
+
+const produtosDiv=document.getElementById("produtos")
+const lista=document.getElementById("listaCarrinho")
+const totalSpan=document.getElementById("total")
+
+function renderProdutos(){
+
+let html=""
+
+produtos.forEach((p,i)=>{
+
+html+=`
+
+<div class="card">
+
+<div class="banner">
+
+<img src="${p.img}">
+
+<div class="controle">
+
+<button onclick="remover(${i})">-</button>
+
+<span class="qtd">${carrinho[i]||0}</span>
+
+<button onclick="add(${i})">+</button>
+
+</div>
+
+</div>
+
+<div class="info">
+
+<b>${p.nome}</b>
+
+<span>R$ ${p.preco.toFixed(2)}</span>
+
+</div>
+
+</div>
+
+`
+
+})
+
+produtosDiv.innerHTML=html
+
+}
+
+
+
+
+function add(i){
+
+carrinho[i]=(carrinho[i]||0)+1
+
+atualizar()
+
+renderProdutos()
+
+
+let pagamento = document.getElementById("pagamento").value
+
+if(pagamento=="pix"){
+
+let total = parseFloat(totalSpan.textContent)
+
+gerarPix(total)
+
+
+
+}
+}
+
+
+
+
+
+function remover(i){
+
+if(!carrinho[i]) return
+
+carrinho[i]--
+
+if(carrinho[i]<=0) delete carrinho[i]
+
+atualizar()
+
+renderProdutos()
+
+
+
+let pagamento = document.getElementById("pagamento").value
+
+if(pagamento=="pix"){
+
+let total = parseFloat(totalSpan.textContent)
+
+gerarPix(total)
+
+
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+function atualizar(){
+
+let total=0
+let html=""
+
+for(let i in carrinho){
+
+let qtd=carrinho[i]
+let p=produtos[i]
+
+let sub=qtd*p.preco
+
+total+=sub
+
+html+=`<div class="item">${qtd}x ${p.nome}<span>R$ ${sub.toFixed(2)}</span></div>`
+
+}
+
+lista.innerHTML=html||"Carrinho vazio"
+
+totalSpan.textContent=total.toFixed(2)
+
+
+let pagamento=document.getElementById("pagamento").value
+
+if(pagamento=="pix") gerarPix(total)
+
+
+
+
+}
+
+
+
+
+
+
+function buscarProduto(){
+
+let texto = document
+.getElementById("buscar")
+.value
+.toLowerCase()
+
+let cards = document.querySelectorAll(".card")
+
+cards.forEach(card=>{
+
+let nome = card
+.querySelector("b")
+.innerText
+.toLowerCase()
+
+if(nome.includes(texto)){
+card.style.display="block"
+}else{
+card.style.display="none"
+}
+
+})
+
+}
+
+
+
+
+function limparBusca(){
+
+document.getElementById("buscar").value=""
+
+buscarProduto()
+
+}
+
+
+
+
+
+
+
+function verPagamento(){
+
+let p=document.getElementById("pagamento").value
+
+document.getElementById("trocoBox").style.display=p=="dinheiro"?"block":"none"
+
+if(p=="pix"){
+   let total = parseFloat(totalSpan.textContent)
+   gerarPix(total)
+}
+
+}
+
+
+
+
+
+function montarCampo(id, valor){
+  return id + valor.length.toString().padStart(2,'0') + valor;
+}
+
+function crc16(payload){
+  let polinomio = 0x1021;
+  let resultado = 0xFFFF;
+
+  for(let i=0;i<payload.length;i++){
+    resultado ^= payload.charCodeAt(i) << 8;
+    for(let bit=0;bit<8;bit++){
+      if((resultado <<= 1) & 0x10000){
+        resultado ^= polinomio;
+      }
+    }
+  }
+  return (resultado & 0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+}
+
+function gerarPix(valor){
+
+  if(!valor || valor <= 0){
+    alert("Adicione produtos antes de gerar o PIX");
+    return;
+  }
+
+  const gui = montarCampo("00","BR.GOV.BCB.PIX");
+  const chave = montarCampo("01", chavePix);
+  const merchantAccount = montarCampo("26", gui + chave);
+
+  const payloadSemCRC =
+    montarCampo("00","01") +
+    merchantAccount +
+    montarCampo("52","0000") +
+    montarCampo("53","986") +
+    montarCampo("54", valor.toFixed(2)) +
+    montarCampo("58","BR") +
+    montarCampo("59", nomeRecebedor) +
+    montarCampo("60", cidade) +
+    montarCampo("62", montarCampo("05","***")) +
+    "6304";
+
+  const payloadFinal = payloadSemCRC + crc16(payloadSemCRC);
+
+  document.getElementById("pixCode").innerText = payloadFinal;
+
+  document.getElementById("qrPix").src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" +
+    encodeURIComponent(payloadFinal);
+
+  document.getElementById("pixBox").style.display = "block";
+}
+
+
+
+
+
+function copiarPix(){
+
+let code=document.getElementById("pixCode").innerText
+
+navigator.clipboard.writeText(code)
+
+alert("Pix copiado!")
+
+}
+
+
+
+
+
+
+function enviarPedido(){
+
+let nome=document.getElementById("nome").value
+let endereco=document.getElementById("endereco").value
+let pagamento=document.getElementById("pagamento").value
+
+if(!nome || !endereco){
+alert("Preencha Nome e Endereço")
+return
+}
+
+let total=totalSpan.textContent
+
+let msg=`🍱 Pedido #${numeroPedido}\n`
+
+for(let i in carrinho){
+
+let qtd=carrinho[i]
+let p=produtos[i]
+
+msg+=`${qtd}x ${p.nome} = R$ ${(qtd*p.preco).toFixed(2)}\n`
+
+}
+
+msg+=`Total: R$ ${total}\n`
+
+msg+=`Pagamento: ${pagamento}\n`
+
+if(pagamento=="dinheiro"){
+
+let troco=document.getElementById("troco").value
+
+if(troco) msg+=`Troco para: R$ ${troco}\n`
+
+}
+
+msg+=`Cliente: ${nome}
+Endereço: ${endereco}\n`
+
+const link = "https://api.whatsapp.com/send?phone=" +
+               telefoneWhatsapp +
+               "&text=" +
+               encodeURIComponent(msg);
+
+  window.open(link, "_blank");
+}
+
+
+
+
+
+
+renderProdutos()
+
+</script>
+
+</body>
+</html>
