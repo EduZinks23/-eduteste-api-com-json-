@@ -244,7 +244,7 @@ ig:
           <div class="pp-toast-row1">
             <div class="pp-toast-stripe"></div>
             <div class="pp-toast-brand">
-              <div class="pp-toast-brand-name">PIXEL<br/><em>GRID</em></div>
+              <div class="pp-toast-brand-name">EduGamePlays<br/><em>FCM</em></div>
             </div>
             <div class="pp-toast-actions">
               <a class="pp-btn-yt" href="${T.yt}" target="_blank" rel="noopener">${SVG_YT} Subscribe</a>
