@@ -207,21 +207,24 @@
 
     <div class="video-wrapper">
 
-      <iframe class="player" id="player" frameborder="0" allowfullscreen="true" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Master Front-End Development &amp; Web Design in 2025 ðŸš€ | Welcome to ThePixelPerfect!" width="640" height="360" src="https://www.youtube.com/embed/GaMcI58hjBA?controls=0&amp;modestbranding=0&amp;rel=0&amp;showinfo=0&amp;autoplay=1&amp;mute=0&amp;enablejsapi=1&amp;origin=https%3A%2F%2Ftiny-klepon-fb199e.netlify.app&amp;widgetid=1&amp;forigin=https%3A%2F%2Ftiny-klepon-fb199e.netlify.app%2F&amp;aoriginsup=1&amp;vf=5"></iframe>
+      <div class="player" id="player"></div>
 
-      <div class="overlay-play" id="overlayPlay" style="opacity: 1;">
+      <div class="overlay-play" id="overlayPlay">
         <i class="fas fa-play"></i>
       </div>
 
       <div class="controls-bar">
 
-        <button id="playPauseBtn" class="btn"><i class="fas fa-play"></i></button>
+        <button id="playPauseBtn" class="btn">
+          <i class="fas fa-play"></i>
+        </button>
 
         <div class="volume-container">
           <button id="muteBtn" class="btn">
             <i class="fas fa-volume-high"></i>
           </button>
-          <input type="range" id="volumeSlider" min="0" max="100" value="100" class="slider volume" style="background: linear-gradient(to right, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.1) 0%);">
+          <input type="range" id="volumeSlider" min="0" max="100" value="100"
+            class="slider volume" />
         </div>
 
         <select id="playbackSpeed" class="control-select">
@@ -231,12 +234,13 @@
         </select>
 
         <span class="time">
-          <span id="currentTime">0:10</span> /
-          <span id="duration">0:54</span>
+          <span id="currentTime">0:00</span> /
+          <span id="duration">0:00</span>
         </span>
 
         <div class="seek-container">
-          <input type="range" id="seekBar" min="0" max="100" value="0" class="slider seek" style="background: linear-gradient(to right, rgb(255, 255, 255) 20%, rgba(255, 255, 255, 0.1) 20%);">
+          <input type="range" id="seekBar" min="0" max="100" value="0"
+            class="slider seek" />
         </div>
 
         <button id="fullscreenBtn" class="fullscreen-btn">
