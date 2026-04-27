@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Define globally so API can call it
   window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("player", {
-      videoId: "2FrCsScQ1-g",
+      videoId: "GaMcI58hjBA",
       playerVars: {
         controls: 0,
         modestbranding: 0,
