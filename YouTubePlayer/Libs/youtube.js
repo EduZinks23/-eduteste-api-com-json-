@@ -253,7 +253,7 @@ ig:
             </div>
           </div>
           <div class="pp-toast-copy">
-            <div class="pp-toast-copy-head">New UI tutorials every week</div>
+            <div class="pp-toast-copy-head">YouTube Player Custom UI</div>
             <div class="pp-toast-copy-sub">G sap · ScrollTrigger · Creative CSS</div>
           </div>
         </div>
