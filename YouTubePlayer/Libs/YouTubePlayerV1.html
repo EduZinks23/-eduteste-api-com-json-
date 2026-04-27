@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Player</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="./styles.css">
+<style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style><input type="hidden" id="inject_idm_text_selection"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap');
+
+    .pp-widget * { box-sizing: border-box; margin: 0; padding: 0; }
+    .pp-widget a { text-decoration: none; cursor: pointer; }
+
+    .pp-btn-yt, .pp-btn-ig {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', monospace !important;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .pp-btn-yt {
+      background: rgb(255 0 0 / 9%);
+      border-color: rgb(255 0 0 / 25%);
+      color: #ffffff;
+    }
+    .pp-btn-yt:hover {
+      background: rgb(255 0 0 / 16%);
+      border-color: rgb(255 0 0 / 56%);
+    }
+    .pp-btn-ig {
+      background: linear-gradient(135deg, rgb(131 58 180 / 14%), rgb(225 48 108 / 14%), rgb(253 121 36 / 14%));
+      border-color: rgb(225 48 108 / 30%);
+      color: #f0ede6;
+    }
+    .pp-btn-ig:hover {
+      background: linear-gradient(135deg, rgb(131 58 180 / 25%), rgb(225 48 108 / 25%), rgb(253 121 36 / 25%));
+      border-color: rgb(225 48 108 / 60%);
+      color: #ffffff;
+    }
+    .pp-close {
+      background: rgba(240,237,230,0.1);
+      border: 1px solid rgba(240,237,230,0.3);
+      color: #f0ede6;
+      cursor: pointer;
+      border-radius: 3px;
+      font-family: 'DM Mono', monospace !important;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      line-height: 1;
+    }
+    .pp-close:hover {
+      background: rgba(240,237,230,0.2);
+      border-color: rgba(240,237,230,0.55);
+      color: #ffffff;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pp-widget, .pp-widget * { animation: none !important; transition: none !important; }
+    }
+  
+      /* â”€â”€ Toast wrapper â”€â”€ */
+      .pp-toast {
+        position: fixed;
+        top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-140%);
+        z-index: 2147483647;
+        background: #0a0a0a;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        border: 1px solid rgba(240,237,230,0.08);
+        border-radius: 6px;
+        overflow: hidden;
+        width: min(600px, calc(100vw - 32px));
+        opacity: 0;
+        transition: transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(200,255,0,0.07);
+        display: flex;
+        flex-direction: column;
+      }
+      .pp-toast.visible {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      .pp-toast.hiding {
+        transform: translateX(-50%) translateY(-140%);
+        opacity: 0;
+      }
+
+      /* â”€â”€ Row 1: stripe + brand + actions â”€â”€ */
+      .pp-toast-row1 {
+        display: flex;
+        align-items: stretch;
+        border-bottom: 1px solid rgba(240,237,230,0.08);
+      }
+
+      .pp-toast-stripe {
+        width: 3px; flex-shrink: 0;
+        background: #b1b2ae;
+      }
+
+      .pp-toast-brand {
+        padding: 14px 18px;
+        display: flex; flex-direction: column;
+        justify-content: center; gap: 3px;
+        flex-shrink: 0;
+        border-right: 1px solid rgba(240,237,230,0.08);
+      }
+      .pp-toast-brand-name {
+        font-family: 'Bebas Neue', sans-serif !important;
+        font-size: 1.5rem; line-height: 0.92;
+        letter-spacing: 0.04em; color: #f0ede6;
+      }
+      .pp-toast-brand-name em { font-style: normal; color: #b1b2ae; }
+      .pp-toast-brand-sub {
+        font-family: 'DM Mono', monospace !important;
+        font-size: 0.6rem; letter-spacing: 0.2em;
+        text-transform: uppercase; color: rgba(213, 213, 213, 0.35);
+      }
+
+      .pp-toast-actions {
+        flex: 1;
+        padding: 10px 14px;
+        display: flex; align-items: center;
+        justify-content: flex-end; gap: 8px;
+        flex-wrap: wrap;
+      }
+      .pp-toast-actions .pp-btn-yt,
+      .pp-toast-actions .pp-btn-ig { padding: 9px 16px; white-space: nowrap; }
+      .pp-toast-actions .pp-close  { padding: 9px 10px; display: flex; align-items: center; justify-content: center; }
+
+      /* â”€â”€ Row 2: copy â€” full width â”€â”€ */
+      .pp-toast-copy {
+        padding: 11px 18px 14px;
+        display: flex; flex-direction: column; gap: 4px;
+      }
+      .pp-toast-copy-head {
+        font-family: 'DM Mono', monospace !important;
+        font-size: 0.9rem; letter-spacing: 0.16em;
+        text-transform: uppercase; color: #f0ede6;
+        margin-bottom: 0.1rem;
+      }
+      .pp-toast-copy-sub {
+        font-family: 'DM Mono', monospace !important;
+        font-size: 0.8rem; letter-spacing: 0.14em;
+        text-transform: uppercase; color: rgba(213, 213, 213, 0.35);
+      }
+
+      /* â”€â”€ Reopen tab â€” stays after close â”€â”€ */
+      .pp-reopen {
+        position: fixed;
+        top: 0; left: 50%;
+        transform: translateX(-50%) translateY(-100%);
+        z-index: 2147483647;
+        background: #0a0a0a;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        padding: 7px 18px 8px;
+        display: flex; align-items: center; gap: 8px;
+        cursor: pointer;
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      }
+      .pp-reopen.visible {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      .pp-reopen-dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: #b1b2ae;
+        box-shadow: 0 0 6px #b1b2ae;
+        flex-shrink: 0;
+        animation: pp-pulse 2s ease-in-out infinite;
+      }
+      @keyframes pp-pulse {
+        0%,100% { opacity:1; transform:scale(1); }
+        50%      { opacity:0.4; transform:scale(0.7); }
+      }
+      .pp-reopen-label {
+        font-family: 'DM Mono', monospace !important;
+        font-size: 0.5rem; letter-spacing: 0.18em;
+        text-transform: uppercase; color: rgba(213, 213, 213, 0.35);
+        white-space: nowrap;
+        transition: color 0.2s;
+      }
+      .pp-reopen:hover .pp-reopen-label { color: #f0ede6; }
+
+      /* â”€â”€ Mobile â”€â”€ */
+      @media (max-width: 520px) {
+        .pp-toast { top: 0; border-radius: 0 0 6px 6px; border-top: none; }
+        .pp-toast-actions { justify-content: flex-start; }
+        .pp-toast-actions .pp-btn-yt,
+        .pp-toast-actions .pp-btn-ig { flex: 1; justify-content: center; }
+      }
+    </style><script type="text/javascript" id="www-widgetapi-script" src="https://www.youtube.com/s/player/8456c9de/www-widgetapi.vflset/www-widgetapi.js" async=""></script><script src="https://www.youtube.com/iframe_api"></script></head>
+
+<body>
+  <div class="player-card">
+
+    <div class="video-wrapper">
+
+      <iframe class="player" id="player" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Master Front-End Development &amp; Web Design in 2025 ðŸš€ | Welcome to ThePixelPerfect!" width="640" height="360" src="https://www.youtube.com/embed/2FrCsScQ1-g?controls=0&amp;modestbranding=0&amp;rel=0&amp;showinfo=0&amp;autoplay=1&amp;mute=1&amp;enablejsapi=1&amp;origin=https%3A%2F%2Ftiny-klepon-fb199e.netlify.app&amp;widgetid=1&amp;forigin=https%3A%2F%2Ftiny-klepon-fb199e.netlify.app%2F&amp;aoriginsup=1&amp;vf=5"></iframe>
+
+      <div class="overlay-play" id="overlayPlay" style="opacity: 1;">
+        <i class="fas fa-play"></i>
+      </div>
+
+      <div class="controls-bar">
+
+        <button id="playPauseBtn" class="btn"><i class="fas fa-play"></i></button>
+
+        <div class="volume-container">
+          <button id="muteBtn" class="btn">
+            <i class="fas fa-volume-high"></i>
+          </button>
+          <input type="range" id="volumeSlider" min="0" max="100" value="100" class="slider volume" style="background: linear-gradient(to right, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.1) 0%);">
+        </div>
+
+        <select id="playbackSpeed" class="control-select">
+          <option value="1">1x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+
+        <span class="time">
+          <span id="currentTime">0:10</span> /
+          <span id="duration">0:54</span>
+        </span>
+
+        <div class="seek-container">
+          <input type="range" id="seekBar" min="0" max="100" value="0" class="slider seek" style="background: linear-gradient(to right, rgb(255, 255, 255) 20%, rgba(255, 255, 255, 0.1) 20%);">
+        </div>
+
+        <button id="fullscreenBtn" class="fullscreen-btn">
+          <i class="fas fa-expand"></i>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/YT-PixelPerfectLabs/Youtube-Floating-Button/dist/script.js"></script>
+  <script src="./main.js"></script>
+
+
+
+<div class="pp-toast-root">
+        <div class="pp-widget pp-toast visible" id="ppToast">
+          <div class="pp-toast-row1">
+            <div class="pp-toast-stripe"></div>
+            <div class="pp-toast-brand">
+              <div class="pp-toast-brand-name">PIXEL<br><em>GRID</em></div>
+            </div>
+            <div class="pp-toast-actions">
+              <a class="pp-btn-yt" href="https://linkly.link/2CJtA" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path></svg> Subscribe</a>
+              <a class="pp-btn-ig" href="https://www.instagram.com/pixelgridui" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#ffffff" width="16" height="16"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5a5.5 5.5 0 110 11 5.5 5.5 0 010-11zm0 2a3.5 3.5 0 100 7 3.5 3.5 0 000-7zM19 6.5a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0z"></path></svg> Follow</a>
+              <button class="pp-close" id="ppClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+          </div>
+          <div class="pp-toast-copy">
+            <div class="pp-toast-copy-head">New UI tutorials every week</div>
+            <div class="pp-toast-copy-sub">G sap Â· ScrollTrigger Â· Creative CSS</div>
+          </div>
+        </div>
+        <button class="pp-reopen" id="ppReopen" aria-label="Reopen Pixel Grid widget">
+          <span class="pp-reopen-dot"></span>
+          <span class="pp-reopen-label">Pixel Grid UI</span>
+        </button>
+      </div></body></html>
