@@ -1,20 +1,36 @@
 {
 
-"perfil_default_youtube":""
+"logo_youtube_default":""
+
 ,
 
-"capa_default_youtube":""
+"perfil_youtube_default":""
+
 ,
 
-"perfil_default_tiktok":""
+"capa_youtube_default":""
+
 ,
 
-"capa_default_tiktok":""
+"logo_tiktok_default":""
+
 ,
 
-"perfil_default_kwai":""
+"perfil_tiktok_default":""
+
 ,
 
-"capa_default_kwai":""
+"capa_tiktok_default":""
+
+,
+
+"logo_kwai_default":""
+
+,
+
+"perfil_kwai_default":""
+,
+
+"capa_kwai_default":""
 
 }
